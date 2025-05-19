@@ -2,7 +2,10 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.1"; // Измените это значение при каждой новой редакции
+    var SCRIPT_VERSION = "2.2"; 
+    // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
+    // Установите 'false', чтобы скрыть отображение версии
+    var DEBUG_SHOW_SCRIPT_VERSION = true; 
 
     // --- НАЧАЛО БЛОКА CSS-СТИЛЕЙ ---
     var cssStyles = `
@@ -24,6 +27,8 @@
   font-family: Arial, sans-serif;
   z-index: 100000; 
   border-radius: 3px;
+  /* По умолчанию скрыт, если DEBUG_SHOW_SCRIPT_VERSION = false */
+  /* display: none; /* Управляется JS */
 }
 
 /* --- Скрытие стандартного Tilda "flash" эффекта --- */
@@ -171,43 +176,32 @@
   background-position: center center !important; 
 }
 
-/* ====================================================================
-  Стили для изображения "кулис" (#rec1036627011)
-  - Изображение шире блока, полупрозрачное, плавное появление
-  ====================================================================
-*/
-#rec1036627011 { /* Родительский блок Tilda для изображения */
-  width: 100vw !important; /* Блок занимает всю ширину окна */
+/* --- Стили для изображения "кулис" (#rec1036627011) --- */
+#rec1036627011 { 
+  width: 100vw !important; 
   max-width: 100vw !important;
-  position: relative !important; /* Для позиционирования translateX */
+  position: relative !important;
   left: 50% !important;
-  transform: translateX(-50%) !important; /* Центрируем сам блок */
-  overflow: hidden !important; /* ОБЯЗАТЕЛЬНО, чтобы обрезать выходящее за пределы изображение */
-  
-  /* Начальное состояние для анимации появления */
+  transform: translateX(-50%) !important; 
+  overflow: hidden !important; 
   opacity: 0;
-  transition: opacity 0.8s ease-out; /* Плавный переход только для opacity */
+  transition: opacity 0.8s ease-out;
 }
-
 #rec1036627011.curtain-image-is-visible {
-  opacity: 0.7 !important; /* Полупрозрачность (40%). Настройте по вкусу (0.3 - 0.7) */
+  opacity: 0.4 !important; 
 }
-
-#rec1036627011 .t107 { /* Внутренний контейнер Tilda для блока T107 */
-    /* Убираем стандартные отступы Tilda, если они мешают */
+#rec1036627011 .t107 { 
     padding-left: 0 !important;
     padding-right: 0 !important;
-    /* Можно также задать высоту, если нужно, но обычно Tilda ее подстраивает */
 }
-
-#rec1036627011 .t107 .t-img { /* Само изображение внутри блока */
+#rec1036627011 .t107 .t-img { 
   display: block !important;
-  width: 200% !important; /* Изображение в два раза шире своего контейнера (который 100vw) */
-  max-width: 200% !important; /* Чтобы !important перебил другие max-width */
-  height: auto !important; /* Сохраняем пропорции */
-  position: relative !important; /* Для смещения */
+  width: 200% !important; 
+  max-width: 200% !important; 
+  height: auto !important; 
+  position: relative !important; 
   left: 50% !important;
-  transform: translateX(-50%) !important; /* Центрируем изображение шириной 200% внутри контейнера 100vw */
+  transform: translateX(-50%) !important; 
   border-radius: 0 !important; 
   border: none !important;
 }
@@ -236,6 +230,10 @@
     // --- НАЧАЛО БЛОКА JAVASCRIPT-ЛОГИКИ ---
     
     function displayScriptVersion() {
+        // ===> Функция будет выполняться только если DEBUG_SHOW_SCRIPT_VERSION === true <===
+        if (!DEBUG_SHOW_SCRIPT_VERSION) {
+            return;
+        }
         var versionDisplay = document.createElement('div');
         versionDisplay.className = 'script-version-display';
         versionDisplay.textContent = 'Редакция скрипта: ' + SCRIPT_VERSION;
@@ -294,14 +292,11 @@
       if (!curtainImageBlock) {
         return;
       }
-      var observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 }; // Порог срабатывания - 10% видимости
+      var observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
       var observer = new IntersectionObserver(function(entries, observerInstance) {
         entries.forEach(function(entry) {
           if (entry.isIntersecting) {
             entry.target.classList.add('curtain-image-is-visible');
-          } else {
-            // Если вы хотите, чтобы изображение снова становилось прозрачным, когда уходит из вида:
-            // entry.target.classList.remove('curtain-image-is-visible');
           }
         });
       }, observerOptions);
@@ -323,12 +318,9 @@
     }
     
     window.addEventListener('load', function() {
-        // Дополнительный вызов для отображения версии, если DOMContentLoaded сработал слишком рано
-        if (!document.querySelector('.script-version-display')) {
+        if (DEBUG_SHOW_SCRIPT_VERSION && !document.querySelector('.script-version-display')) {
             displayScriptVersion();
         }
-        // Можно добавить дополнительный вызов setupCurtainImageAnimation, если есть проблемы
-        // setTimeout(setupCurtainImageAnimation, 100); 
     });
 
 })();
