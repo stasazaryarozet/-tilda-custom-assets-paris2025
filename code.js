@@ -223,8 +223,6 @@
         document.body.appendChild(versionDisplay);
     }
     
-    // Функция attemptToHideTildaBadge() и ее вызовы удалены
-
     function setupStickyButtonVisibility() {
       var stickyButton = document.getElementById('sticky-book-button');
       var bookBlock = document.getElementById('book'); 
@@ -310,4 +308,4 @@
         }
     });
 
-})(); // --- КОНЕЦ ОБЕРТКИ И JAVASCRIPT-ЛОГИКИ (больше никаких комментариев после этой строки)
+})();
