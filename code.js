@@ -2,12 +2,11 @@
 (function() {
 
     // --- НАЧАЛО БЛОКА CSS-СТИЛЕЙ ---
-    // Все ваши CSS-правила помещаются сюда, внутри обратных кавычек (` `)
-    // Обратите внимание на использование `!important` там, где это необходимо для переопределения стилей Tilda.
     var cssStyles = `
 /*
   ====================================================================
   ОБЩИЕ СТИЛИ И СТИЛИ ДЛЯ КНОПОК НА САЙТЕ TILDA
+  (Версия для одного файла code.js)
   ====================================================================
 */
 
@@ -19,13 +18,13 @@
 }
 
 /* --- Общая небольшая разрядка для некоторых текстовых элементов Tilda --- */
+/* Примечание: для .t-btn и .t-submit будет свой letter-spacing ниже */
 .t-title, .t-name, .t-heading, .t-uptitle, .t-descr, .t-text, 
-/* Не применяем к .t-btn и .t-submit здесь, так как у них будет свой letter-spacing */
 .t-menu__link-item, .t-uptitle_xs, .t-uptitle_sm, 
 .t-uptitle_md, .t-uptitle_lg, .t-uptitle_xl, [field="title"], 
 [field="btitle"], [field="descr"], [field="bdescr"], 
 [field="subtitle"], [field="text"] {
-  letter-spacing: 0.02em; /* Очень легкая разрядка */
+  letter-spacing: 0.02em;
 }
 
 /*
@@ -35,15 +34,15 @@
 */
 .t-btn,
 .t-submit {
-  position: relative !important; /* Важно для ::after и корректного overflow */
+  position: relative !important; 
   overflow: hidden !important;   
-  isolation: isolate !important; /* Для корректной работы z-index псевдоэлементов */
+  isolation: isolate !important; 
 
   border-radius: 7px !important;
   box-shadow: 0px 2px 3px rgba(0, 11, 48, 0.25) !important;
-  letter-spacing: 0.03em !important; /* Разрядка для текста кнопок */
+  letter-spacing: 0.02em !important; 
   font-weight: bold !important; 
-  font-size: 18px !important; /* Размер текста кнопок (настройте при необходимости) */
+  font-size: 18px !important;
   
   transition-duration: 0.6s !important; 
   transition-property: background-color, color, border-color, opacity, transform, box-shadow, filter !important;
@@ -52,12 +51,11 @@
   -webkit-tap-highlight-color: transparent !important; 
 }
 
-/* Текст и иконки внутри стандартных кнопок должны быть поверх блика */
 .t-btn > *,
-.t-submit > *, /* Для <button> текст является прямым потомком */
-.t-btn span, /* Для кнопок Tilda, где текст в span */
+.t-submit > *,
+.t-btn span,
 .t-submit span {
-    position: relative; /* Чтобы z-index сработал */
+    position: relative;
     z-index: 2; 
 }
 
@@ -67,34 +65,34 @@
   content: '';
   position: absolute;
   top: 0; 
-  left: -150%; /* Начальное положение за пределами кнопки слева */
-  width: 75%;  /* Ширина блика */
+  left: -150%; 
+  width: 75%;  
   height: 100%;
   background: linear-gradient(
     to right,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.25) 40%, /* Яркость блика */
+    rgba(255, 255, 255, 0.25) 40%, 
     rgba(255, 255, 255, 0.25) 60%,
     rgba(255, 255, 255, 0) 100%
   );
-  z-index: 1; /* Блик под текстом, но над фоном кнопки */
+  z-index: 1; 
   
   animation-name: blurredShineAcross;
-  animation-duration: 20s !important; /* Длительность цикла блика (очень редко) */
+  animation-duration: 20s !important; 
   animation-timing-function: ease-in-out; 
   animation-iteration-count: infinite; 
-  animation-delay: 4s; /* Задержка перед первым появлением */
+  animation-delay: 4s; 
 }
 
 @keyframes blurredShineAcross {
   0% {
     transform: translateX(0); 
   }
-  25% { /* Движение блика занимает 25% от общего цикла (5 сек из 20с) */
-    transform: translateX(333%); /* Перемещаем далеко вправо */
+  25% { 
+    transform: translateX(333%); 
   }
   100% { 
-    transform: translateX(333%); /* Остается за пределами */
+    transform: translateX(333%);
   }
 }
 
@@ -104,7 +102,7 @@
   transform: scale(1.03) !important; 
   filter: brightness(1.10) !important; 
   box-shadow: 0px 4px 8px rgba(0, 11, 48, 0.3) !important;
-  animation-name: none !important; /* Убираем любые другие @keyframes анимации на hover */
+  animation-name: none !important; 
 }
 
 /* Стиль ОБЩИХ КНОПОК при НАЖАТИИ (:active) */
@@ -123,15 +121,15 @@
 */
 #sticky-book-button {
   position: fixed;
-  top: 25%; /* Середина верхней половины экрана */
-  right: 25px; /* Отступ от правого края */
-  transform: translateY(-50%) scale(0.8); /* Вертикальное центрирование + начальное уменьшение */
+  top: 25%; 
+  right: 25px; 
+  transform: translateY(-50%) scale(0.8); 
   width: 60px; 
   height: 60px;
   background-color: #ffffff !important; 
-  color: #333333 !important; /* Цвет иконки */
+  color: #333333 !important;           
   border-radius: 50% !important;
-  display: none; /* Изначально скрыта, управляется JS */
+  /* display: none; /* Управляется JS через класс .sticky-button--visible, поэтому здесь flex не нужен по умолчанию */
   justify-content: center;
   align-items: center;
   text-decoration: none;
@@ -146,17 +144,17 @@
 
 #sticky-book-button.sticky-button--visible {
   display: flex !important; /* Важно для центрирования SVG */
-  opacity: 0.75; /* Едва видимая */
+  opacity: 0.75; 
   visibility: visible;
-  transform: translateY(-50%) scale(1); /* Нормальный размер и позиция */
+  transform: translateY(-50%) scale(1);
 }
 
 #sticky-book-button:hover {
   background-color: #f8f8f8 !important; 
-  color: #000000 !important; /* Иконка становится черной */
+  color: #000000 !important;
   transform: translateY(-50%) scale(1.08) !important; 
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25) !important; 
-  opacity: 1 !important; /* Полностью непрозрачна при наведении */
+  opacity: 1 !important;
 }
 
 #sticky-book-button svg {
@@ -165,35 +163,10 @@
   fill: currentColor; 
 }
 
-/* Медиа-запрос для скрытия плавающей кнопки на больших экранах */
 @media screen and (min-width: 981px) { 
   #sticky-book-button {
-     display: none !important; 
+     display: none !important; /* Гарантированно скрываем на больших экранах */
   }
-}
-
-/*
-  ====================================================================
-  Скрытие блока "Made on Tilda" (с высоким риском нарушения условий Tilda)
-  ====================================================================
-*/
-#tildacopy { /* Убедитесь, что здесь все буквы латинские: t-i-l-d-a-c-o-p-y */
-  display: none !important;
-  /* Если display:none все еще перебивается JS Tilda, можно попробовать более агрессивные методы,
-     но они также могут быть обнаружены и заблокированы:
-  position: fixed !important; 
-  left: -99999px !important; 
-  top: -99999px !important;
-  width: 0px !important;
-  height: 0px !important;
-  overflow: hidden !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border: none !important;
-  z-index: -1000 !important;
-  */
 }
     `; // --- КОНЕЦ БЛОКА CSS-СТИЛЕЙ ---
 
@@ -211,28 +184,18 @@
         head.appendChild(styleElement);
     }
 
-    // Внедряем стили, как только DOM готов (или сразу, если уже готов)
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() { addStylesToHead(cssStyles); });
-    } else {
-        addStylesToHead(cssStyles);
-    }
-
     // --- НАЧАЛО БЛОКА JAVASCRIPT-ЛОГИКИ ---
     
-    // Функция для скрытия лейбла Tilda (с попытками и задержками)
+    // Функция для попытки скрытия лейбла Tilda
+    // ВНИМАНИЕ: Скрытие этого блока может нарушать условия использования Tilda!
     function attemptToHideTildaBadge() {
-      var tildaBadge = document.getElementById('tildacopy'); // Латинская 'o'
+      var tildaBadge = document.getElementById('tildacopy'); // Убедитесь, что 'o' - латинская
       if (tildaBadge) {
-        // Этот метод с setAttribute('style', ...) более агрессивный
         tildaBadge.setAttribute('style', 
           'display: none !important; visibility: hidden !important; opacity: 0 !important; ' +
           'width: 0px !important; height: 0px !important; margin: 0px !important; padding: 0px !important; ' +
           'border: none !important; position: absolute !important; left: -9999px !important; top: -9999px !important;'
         );
-        // console.log('Tilda badge hiding attempted via setAttribute.');
-      } else {
-        // console.log('Tilda badge not found for hiding.');
       }
     }
 
@@ -241,23 +204,38 @@
       var stickyButton = document.getElementById('sticky-book-button');
       var bookBlock = document.getElementById('book'); 
       
-      // ===> ВАЖНО: Замените на актуальные ID ваших блоков с портретами авторов <===
-      var authorBlockSelectors = ['#rec1036890941', '#rec1036956216']; 
-      var authorBlocks = authorBlockSelectors.map(function(selector) { return document.querySelector(selector); }).filter(function(el) { return el !== null; });
+      // ===> ВАЖНО: Замените на актуальные ID ВАШИХ блоков с портретами авторов <===
+      var authorBlockSelectors = ['#rec1036890941', '#rec1036956216']; // Это ПРИМЕРЫ ID, используйте свои!
+      var authorBlocks = []; // Инициализируем пустым, чтобы избежать ошибок, если querySelectorAll не найдет ничего
 
+      if (authorBlockSelectors.length > 0) {
+          authorBlocks = Array.prototype.slice.call(document.querySelectorAll(authorBlockSelectors.join(',')));
+      }
+      
       if (!stickyButton) {
         return;
       }
 
       var showButtonAfterScroll = 300; 
       var activeScreenWidth = 980; 
-      var hideBeforeBookBlockTopOffset = window.innerHeight * 0.3; // Скрывать, когда до верха #book остается 30% высоты экрана снизу
+      var hideBeforeBookBlockTopOffset = window.innerHeight * 0.3; 
 
       function checkButtonVisibility() {
+        // Проверка ширины экрана должна быть первой
         if (window.innerWidth > activeScreenWidth) {
-          stickyButton.classList.remove('sticky-button--visible');
+          if (stickyButton.classList.contains('sticky-button--visible')) {
+            stickyButton.classList.remove('sticky-button--visible');
+          }
+          // Можно также принудительно установить display: none, если CSS @media не всегда срабатывает
+          // stickyButton.style.display = 'none';
           return;
         }
+        // Если CSS через @media уже скрыл кнопку, то JS не должен ее пытаться показать
+        // Однако, если JS управляет классом, он должен иметь возможность ее показать, если display: flex.
+        // Убедимся, что кнопка может быть показана, если она не скрыта медиа-запросом.
+        // (Это сложно координировать, если CSS @media использует display:none !important)
+        // Для простоты, будем полагаться на JS для управления видимостью на активных экранах.
+
 
         var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
         var windowHeight = window.innerHeight;
@@ -270,7 +248,9 @@
         if (authorBlocks.length > 0) {
           var buttonRect = stickyButton.getBoundingClientRect();
           for (var i = 0; i < authorBlocks.length; i++) {
+            if (!authorBlocks[i]) continue; // Пропускаем, если элемент не найден
             var authorRect = authorBlocks[i].getBoundingClientRect();
+            // Проверка на пересечение прямоугольников
             var overlap = !(buttonRect.right < authorRect.left || 
                             buttonRect.left > authorRect.right || 
                             buttonRect.bottom < authorRect.top || 
@@ -282,13 +262,15 @@
           }
         }
 
-        // 2. Проверка на достижение блока #book (или конца страницы, если #book нет)
+        // 2. Проверка на достижение блока #book
         if (bookBlock) {
           var bookBlockRect = bookBlock.getBoundingClientRect();
+          // Скрываем, если верх блока #book уже виден достаточно высоко (в пределах нижних 70% экрана)
           if (bookBlockRect.top < (windowHeight - hideBeforeBookBlockTopOffset)) {
             shouldHideDueToBookBlock = true;
           }
         } else {
+          // Если блока #book нет, используем логику скрытия у самого низа страницы
           var documentHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
           var hideButtonBeforePageEnd = 250; 
           if ((scrollPosition + windowHeight) >= (documentHeight - hideButtonBeforePageEnd)) {
@@ -306,20 +288,33 @@
 
       window.addEventListener('scroll', checkButtonVisibility, { passive: true });
       window.addEventListener('resize', checkButtonVisibility);
-      setTimeout(checkButtonVisibility, 250); // Немного увеличена задержка для надежности
+      
+      // Первоначальная проверка видимости с небольшой задержкой
+      // чтобы Tilda успела построить все свои блоки, от которых могут зависеть offsetTop
+      setTimeout(checkButtonVisibility, 300); 
     }
 
-    // Запускаем основные функции после загрузки DOM
-    document.addEventListener('DOMContentLoaded', function() {
-      attemptToHideTildaBadge(); // Первая попытка скрыть лейбл
-      setupStickyButtonVisibility(); // Настройка плавающей кнопки
+    // Выполнение функций после полной загрузки DOM
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            addStylesToHead(cssStyles); // Сначала добавляем стили
+            attemptToHideTildaBadge();  // Затем пытаемся скрыть лейбл
+            setupStickyButtonVisibility(); // Затем настраиваем кнопку
 
-      // Дополнительные попытки скрыть лейбл Tilda с бОльшими задержками
-      setTimeout(attemptToHideTildaBadge, 1000);
-      setTimeout(attemptToHideTildaBadge, 3000);
-    });
+            // Дополнительные вызовы для скрытия лейбла Tilda
+            setTimeout(attemptToHideTildaBadge, 1000);
+            setTimeout(attemptToHideTildaBadge, 2500);
+        });
+    } else { // Если DOM уже загружен
+        addStylesToHead(cssStyles);
+        attemptToHideTildaBadge();
+        setupStickyButtonVisibility();
 
-    // И еще одна попытка после полной загрузки всех ресурсов страницы
+        setTimeout(attemptToHideTildaBadge, 1000);
+        setTimeout(attemptToHideTildaBadge, 2500);
+    }
+    
+    // И еще одна попытка скрыть лейбл Tilda после полной загрузки всех ресурсов
     window.addEventListener('load', function() {
         setTimeout(attemptToHideTildaBadge, 500);
     });
