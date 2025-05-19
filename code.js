@@ -147,24 +147,29 @@
   box-sizing: border-box !important;
 }
 
-/* ====================================================================
-  ИСПРАВЛЕНИЕ ДЛЯ ОБРЕЗАННЫХ ПОРТРЕТОВ АВТОРОВ
-  ====================================================================
-*/
-/* Для портрета Ольги (блок #rec1036890941) */
-#rec1036890941 .t480__blockimg.t-bgimg {
-  background-size: contain !important; 
-  background-repeat: no-repeat !important; 
-  background-position: center center !important; 
-  /* background-color: #ffffff !important; /* Цвет фона, если изображение не заполняет блок */
-}
-
-/* === ДОБАВЛЕНО: Для портрета Натальи (блок #rec1036956216) === */
+/* --- ИСПРАВЛЕНИЕ ДЛЯ ОБРЕЗАННЫХ ПОРТРЕТОВ АВТОРОВ --- */
+#rec1036890941 .t480__blockimg.t-bgimg,
 #rec1036956216 .t480__blockimg.t-bgimg {
   background-size: contain !important; 
   background-repeat: no-repeat !important; 
   background-position: center center !important; 
-  /* background-color: #ffffff !important; /* Цвет фона, если изображение не заполняет блок */
+  /* background-color: #ffffff !important; */ /* Раскомментируйте и настройте, если нужен фон для пустых полей */
+}
+
+/* ====================================================================
+  Изображение над "Авторские маршруты" (#rec1036627011) без скругленных границ
+  ====================================================================
+*/
+#rec1036627011 .t107 .t-img {
+  border-radius: 0 !important; /* Убираем скругление углов */
+  border: none !important;     /* Убираем возможные рамки */
+  padding: 0 !important;      /* Убираем возможные внутренние отступы */
+  /* Если изображение имеет класс t-width_100 (как в вашем HTML), оно будет на всю ширину контейнера. 
+     Если нужно ограничить его ширину, можно добавить, например:
+     max-width: 500px !important; 
+     margin-left: auto !important;
+     margin-right: auto !important;
+  */
 }
 
 /* Скрытие блока "Made on Tilda" */
@@ -203,9 +208,6 @@
       var stickyButton = document.getElementById('sticky-book-button');
       var bookBlock = document.getElementById('book'); 
       
-      // Логика для скрытия у блоков авторов была удалена по вашему запросу.
-      // Если захотите вернуть, нужно будет ее доработать.
-
       if (!stickyButton) { return; }
 
       var showButtonAfterScroll = 300; 
@@ -270,3 +272,23 @@
     });
 
 })();
+```
+
+**Ключевое добавление в CSS-части:**
+
+```css
+/* ====================================================================
+  Изображение над "Авторские маршруты" (#rec1036627011) без скругленных границ
+  ====================================================================
+*/
+#rec1036627011 .t107 .t-img {
+  border-radius: 0 !important; /* Убираем скругление углов */
+  border: none !important;     /* Убираем возможные рамки */
+  padding: 0 !important;      /* Убираем возможные внутренние отступы */
+  /* Если изображение имеет класс t-width_100 (как в вашем HTML), оно будет на всю ширину контейнера. 
+     Если нужно ограничить его ширину, можно добавить, например:
+     max-width: 500px !important; 
+     margin-left: auto !important;
+     margin-right: auto !important;
+  */
+}
