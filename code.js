@@ -2,7 +2,7 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.0"; // Измените это значение при каждой новой редакции
+    var SCRIPT_VERSION = "2.1"; // Измените это значение при каждой новой редакции
 
     // --- НАЧАЛО БЛОКА CSS-СТИЛЕЙ ---
     var cssStyles = `
@@ -22,7 +22,7 @@
   padding: 5px 10px;
   font-size: 12px;
   font-family: Arial, sans-serif;
-  z-index: 100000; /* Очень высокий z-index, чтобы быть поверх всего */
+  z-index: 100000; 
   border-radius: 3px;
 }
 
@@ -171,26 +171,45 @@
   background-position: center center !important; 
 }
 
-/* --- Стили для изображения "кулис" (#rec1036627011) --- */
-#rec1036627011 { 
-  width: 200vw !important; 
-  max-width: 200vw !important;
-  position: relative !important;
+/* ====================================================================
+  Стили для изображения "кулис" (#rec1036627011)
+  - Изображение шире блока, полупрозрачное, плавное появление
+  ====================================================================
+*/
+#rec1036627011 { /* Родительский блок Tilda для изображения */
+  width: 100vw !important; /* Блок занимает всю ширину окна */
+  max-width: 100vw !important;
+  position: relative !important; /* Для позиционирования translateX */
   left: 50% !important;
-  transform: translateX(-50%) !important; 
-  overflow: hidden !important; 
+  transform: translateX(-50%) !important; /* Центрируем сам блок */
+  overflow: hidden !important; /* ОБЯЗАТЕЛЬНО, чтобы обрезать выходящее за пределы изображение */
+  
+  /* Начальное состояние для анимации появления */
   opacity: 0;
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  transition: opacity 0.8s ease-out; /* Плавный переход только для opacity */
 }
+
 #rec1036627011.curtain-image-is-visible {
-  opacity: 0.4 !important; 
+  opacity: 0.4 !important; /* Полупрозрачность (40%). Настройте по вкусу (0.3 - 0.7) */
 }
-#rec1036627011 .t107 .t-img { 
+
+#rec1036627011 .t107 { /* Внутренний контейнер Tilda для блока T107 */
+    /* Убираем стандартные отступы Tilda, если они мешают */
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    /* Можно также задать высоту, если нужно, но обычно Tilda ее подстраивает */
+}
+
+#rec1036627011 .t107 .t-img { /* Само изображение внутри блока */
+  display: block !important;
+  width: 200% !important; /* Изображение в два раза шире своего контейнера (который 100vw) */
+  max-width: 200% !important; /* Чтобы !important перебил другие max-width */
+  height: auto !important; /* Сохраняем пропорции */
+  position: relative !important; /* Для смещения */
+  left: 50% !important;
+  transform: translateX(-50%) !important; /* Центрируем изображение шириной 200% внутри контейнера 100vw */
   border-radius: 0 !important; 
   border: none !important;
-  padding: 0 !important;
-  width: 100% !important; 
-  height: auto !important; 
 }
 
 /* Блок "Made on Tilda" БОЛЬШЕ НЕ СКРЫВАЕТСЯ этим скриптом */
@@ -275,13 +294,14 @@
       if (!curtainImageBlock) {
         return;
       }
-      var observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
+      var observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 }; // Порог срабатывания - 10% видимости
       var observer = new IntersectionObserver(function(entries, observerInstance) {
         entries.forEach(function(entry) {
           if (entry.isIntersecting) {
             entry.target.classList.add('curtain-image-is-visible');
           } else {
-            // entry.target.classList.remove('curtain-image-is-visible'); 
+            // Если вы хотите, чтобы изображение снова становилось прозрачным, когда уходит из вида:
+            // entry.target.classList.remove('curtain-image-is-visible');
           }
         });
       }, observerOptions);
@@ -303,9 +323,12 @@
     }
     
     window.addEventListener('load', function() {
+        // Дополнительный вызов для отображения версии, если DOMContentLoaded сработал слишком рано
         if (!document.querySelector('.script-version-display')) {
             displayScriptVersion();
         }
+        // Можно добавить дополнительный вызов setupCurtainImageAnimation, если есть проблемы
+        // setTimeout(setupCurtainImageAnimation, 100); 
     });
 
 })();
