@@ -2,7 +2,6 @@
 (function() {
 
     // --- НАЧАЛО БЛОКА CSS-СТИЛЕЙ ---
-    // Все ваши CSS-правила помещаются сюда, внутри обратных кавычек (` `)
     var cssStyles = `
 /*
   ====================================================================
@@ -11,7 +10,7 @@
   ====================================================================
 */
 
-/* --- Скрытие стандартного Tilda "flash" эффекта (если он где-то включен в настройках блока) --- */
+/* --- Скрытие стандартного Tilda "flash" эффекта --- */
 .t-btn[data-btneffects-first="btneffects-flash"] .t-btn_wrap-effects,
 .t-submit[data-btneffects-first="btneffects-flash"] .t-btn_wrap-effects {
   display: none !important;
@@ -27,34 +26,23 @@
   letter-spacing: 0.02em;
 }
 
-/*
-  ====================================================================
-  ЕДИНЫЙ СТИЛЬ ДЛЯ ВСЕХ СТАНДАРТНЫХ КНОПОК TILDA (.t-btn, .t-submit)
-  ====================================================================
-*/
+/* --- ЕДИНЫЙ СТИЛЬ ДЛЯ ВСЕХ СТАНДАРТНЫХ КНОПОК TILDA (.t-btn, .t-submit) --- */
 .t-btn,
 .t-submit {
   position: relative !important; 
   overflow: hidden !important;   
   isolation: isolate !important; 
-
   border-radius: 7px !important;
   box-shadow: 0px 2px 3px rgba(0, 11, 48, 0.25) !important;
   letter-spacing: 0.02em !important; 
   font-weight: bold !important; 
   font-size: 18px !important;
-  
   transition-duration: 0.6s !important; 
   transition-property: background-color, color, border-color, opacity, transform, box-shadow, filter !important;
-  
   outline: none !important; 
   -webkit-tap-highlight-color: transparent !important; 
 }
-
-.t-btn > *,
-.t-submit > *,
-.t-btn span,
-.t-submit span {
+.t-btn > *, .t-submit > *, .t-btn span, .t-submit span {
     position: relative;
     z-index: 2; 
 }
@@ -64,33 +52,23 @@
 .t-submit::after {
   content: '';
   position: absolute;
-  top: 0; 
-  left: -150%; 
-  width: 75%;  
-  height: 100%;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.25) 40%, 
-    rgba(255, 255, 255, 0.25) 60%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  top: 0; left: -150%; 
+  width: 75%; height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.25) 40%, rgba(255,255,255,0.25) 60%, rgba(255,255,255,0) 100%);
   z-index: 1; 
-  
   animation-name: blurredShineAcross;
   animation-duration: 20s !important; 
   animation-timing-function: ease-in-out; 
   animation-iteration-count: infinite; 
   animation-delay: 4s; 
 }
-
 @keyframes blurredShineAcross {
   0% { transform: translateX(0); }
   25% { transform: translateX(333%); }
   100% { transform: translateX(333%); }
 }
 
-/* Стиль ОБЩИХ КНОПОК при НАВЕДЕНИИ (:hover) */
+/* Hover-эффект для .t-btn, .t-submit */
 .t-btn:hover,
 .t-submit:hover {
   transform: scale(1.03) !important; 
@@ -99,7 +77,7 @@
   animation-name: none !important; 
 }
 
-/* Стиль ОБЩИХ КНОПОК при НАЖАТИИ (:active) */
+/* Active-эффект для .t-btn, .t-submit */
 .t-btn:active,
 .t-submit:active {
   transform: translateY(1px) scale(0.99) !important; 
@@ -108,15 +86,11 @@
   animation-name: none !important; 
 }
 
-/*
-  ====================================================================
-  Стили для ФИКСИРОВАННОЙ КРУГЛОЙ КНОПКИ-ИКОНКИ (#sticky-book-button)
-  ====================================================================
-*/
+/* --- СТИЛИ ДЛЯ ФИКСИРОВАННОЙ КРУГЛОЙ КНОПКИ-ИКОНКИ (#sticky-book-button) --- */
 #sticky-book-button {
   position: fixed;
-  top: 25%; /* Середина верхней половины экрана */
-  right: 25px; /* Отступ от правого края */
+  top: 25%; 
+  right: 25px; 
   transform: translateY(-50%) scale(0.8); 
   width: 60px; 
   height: 60px;
@@ -135,14 +109,12 @@
   transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease, background-color 0.3s ease, box-shadow 0.3s ease !important;
   -webkit-tap-highlight-color: transparent;
 }
-
 #sticky-book-button.sticky-button--visible {
   display: flex !important;
   opacity: 0.75; 
   visibility: visible;
   transform: translateY(-50%) scale(1);
 }
-
 #sticky-book-button:hover {
   background-color: #f8f8f8 !important; 
   color: #000000 !important;
@@ -150,34 +122,21 @@
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25) !important; 
   opacity: 1 !important;
 }
-
 #sticky-book-button svg {
   width: 50%; 
   height: 50%;
   fill: currentColor; 
 }
-
 @media screen and (min-width: 981px) { 
   #sticky-book-button {
      display: none !important; 
   }
 }
 
-/*
-  ====================================================================
-  Стили для полноэкранного фона красных блоков "Дни" и связанных
-  ====================================================================
-*/
-#rec1036419766, /* ДЕНЬ I */
-#rec1037930476, /* красный отступ после ДЕНЬ I */
-#rec1036498676, /* ДЕНЬ III */
-#rec1037931881, /* красный отступ после ДЕНЬ III */
-#rec1036527986, /* ДЕНЬ V */
-#rec1037934761, /* красный отступ после ДЕНЬ V */
-#rec1036706306, /* красный отступ перед блоком "ВХОДЯТ" */
-#rec1036700436, /* блок "ВХОДЯТ" */
-#rec1036706841  /* красный отступ после блока "ВХОДЯТ" */
-{
+/* --- Стили для полноэкранного фона красных блоков "Дни" и связанных --- */
+#rec1036419766, #rec1037930476, #rec1036498676, #rec1037931881,
+#rec1036527986, #rec1037934761, #rec1036706306, #rec1036700436, 
+#rec1036706841 {
   width: 100vw !important; 
   max-width: 100vw !important; 
   padding-left: 0 !important;
@@ -186,6 +145,26 @@
   left: 50% !important;
   transform: translateX(-50%) !important; 
   box-sizing: border-box !important;
+}
+
+/* ====================================================================
+  ИСПРАВЛЕНИЕ ДЛЯ ОБРЕЗАННЫХ ПОРТРЕТОВ АВТОРОВ
+  ====================================================================
+*/
+/* Для портрета Ольги (блок #rec1036890941) */
+#rec1036890941 .t480__blockimg.t-bgimg {
+  background-size: contain !important; 
+  background-repeat: no-repeat !important; 
+  background-position: center center !important; 
+  /* background-color: #ffffff !important; /* Цвет фона, если изображение не заполняет блок */
+}
+
+/* === ДОБАВЛЕНО: Для портрета Натальи (блок #rec1036956216) === */
+#rec1036956216 .t480__blockimg.t-bgimg {
+  background-size: contain !important; 
+  background-repeat: no-repeat !important; 
+  background-position: center center !important; 
+  /* background-color: #ffffff !important; /* Цвет фона, если изображение не заполняет блок */
 }
 
 /* Скрытие блока "Made on Tilda" */
@@ -224,9 +203,8 @@
       var stickyButton = document.getElementById('sticky-book-button');
       var bookBlock = document.getElementById('book'); 
       
-      // Логика для скрытия у блоков авторов УДАЛЕНА
-      // var authorBlockIDs = ['rec1036890941', '#rec1036956216']; 
-      // var authorBlocks = authorBlockIDs.map(function(id) { return document.getElementById(id); }).filter(function(el) { return el !== null; });
+      // Логика для скрытия у блоков авторов была удалена по вашему запросу.
+      // Если захотите вернуть, нужно будет ее доработать.
 
       if (!stickyButton) { return; }
 
@@ -245,9 +223,7 @@
         
         var shouldShowBasedOnInitialScroll = scrollPosition > showButtonAfterScroll;
         var shouldHideDueToBookBlock = false;
-        // var shouldHideDueToAuthorOverlap = false; // Эта переменная больше не нужна
-
-        // Проверка на достижение блока #book (или конца страницы, если #book нет)
+        
         if (bookBlock) {
           var bookBlockRect = bookBlock.getBoundingClientRect();
           if (bookBlockRect.top < hideWhenBookBlockTopIsNear) {
@@ -261,7 +237,6 @@
           }
         }
 
-        // Итоговое решение о видимости (теперь без учета shouldHideDueToAuthorOverlap)
         if (shouldShowBasedOnInitialScroll && !shouldHideDueToBookBlock) {
           stickyButton.classList.add('sticky-button--visible');
         } else {
@@ -295,25 +270,3 @@
     });
 
 })();
-```
-
-**Ключевые изменения в JavaScript-части (`setupStickyButtonVisibility`):**
-
-1.  **Удалены строки, связанные с `authorBlockSelectors` и `authorBlocks`:**
-    ```javascript
-    // var authorBlockIDs = ['rec1036890941', '#rec1036956216']; // Удалено или закомментировано
-    // var authorBlocks = authorBlockIDs.map(function(id) { return document.getElementById(id); }).filter(function(el) { return el !== null; }); // Удалено или закомментировано
-    ```
-2.  **Удалена переменная `shouldHideDueToAuthorOverlap`** и вся логика проверки на пересечение с блоками авторов (цикл `for` и связанные с ним условия).
-3.  **Условие для показа кнопки теперь проще:**
-    ```javascript
-    if (shouldShowBasedOnInitialScroll && !shouldHideDueToBookBlock) {
-      stickyButton.classList.add('sticky-button--visible');
-    } else {
-      stickyButton.classList.remove('sticky-button--visible');
-    }
-    ```
-
-Теперь плавающая кнопка будет появляться после прокрутки на 300px и исчезать только при приближении к блоку `#book` (или к концу страницы), без учета блоков с портретами авторов.
-
-**Пожалуйста, обновите ваш файл `code.js` на GitHub этим кодом, переопубликуйте сайт Tilda и проверьте
