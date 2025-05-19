@@ -2,6 +2,7 @@
 (function() {
 
     // --- НАЧАЛО БЛОКА CSS-СТИЛЕЙ ---
+    // Все ваши CSS-правила помещаются сюда, внутри обратных кавычек (` `)
     var cssStyles = `
 /*
   ====================================================================
@@ -114,26 +115,21 @@
 */
 #sticky-book-button {
   position: fixed;
-  /* === ИЗМЕНЕНО: Позиция - середина верхней половины правого края === */
-  top: 25%; 
-  right: 25px; /* Возвращаем ваш предпочтительный отступ */
-  transform: translateY(-50%) scale(0.8); /* translateY(-50%) для точного вертикального центрирования */
-  
+  top: 25%; /* Середина верхней половины экрана */
+  right: 25px; /* Отступ от правого края */
+  transform: translateY(-50%) scale(0.8); 
   width: 60px; 
   height: 60px;
   background-color: #ffffff !important; 
   color: #333333 !important;           
   border-radius: 50% !important;
-  
-  display: none; /* Изначально скрыта, управляется JS через класс .sticky-button--visible */
+  display: none; 
   justify-content: center;
   align-items: center;
-  
   text-decoration: none;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.18) !important; 
   z-index: 9990; 
   cursor: pointer;
-  
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease, background-color 0.3s ease, box-shadow 0.3s ease !important;
@@ -144,13 +140,13 @@
   display: flex !important;
   opacity: 0.75; 
   visibility: visible;
-  transform: translateY(-50%) scale(1); /* Сохраняем translateY(-50%) для центрирования */
+  transform: translateY(-50%) scale(1);
 }
 
 #sticky-book-button:hover {
   background-color: #f8f8f8 !important; 
   color: #000000 !important;
-  transform: translateY(-50%) scale(1.08) !important; /* Сохраняем translateY(-50%) */
+  transform: translateY(-50%) scale(1.08) !important; 
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25) !important; 
   opacity: 1 !important;
 }
@@ -161,11 +157,35 @@
   fill: currentColor; 
 }
 
-/* Медиа-запрос для скрытия плавающей кнопки на больших экранах (дополнительно к JS) */
 @media screen and (min-width: 981px) { 
   #sticky-book-button {
      display: none !important; 
   }
+}
+
+/*
+  ====================================================================
+  Стили для полноэкранного фона красных блоков "Дни" и связанных
+  ====================================================================
+*/
+#rec1036419766, /* ДЕНЬ I */
+#rec1037930476, /* красный отступ после ДЕНЬ I */
+#rec1036498676, /* ДЕНЬ III */
+#rec1037931881, /* красный отступ после ДЕНЬ III */
+#rec1036527986, /* ДЕНЬ V */
+#rec1037934761, /* красный отступ после ДЕНЬ V */
+#rec1036706306, /* красный отступ перед блоком "ВХОДЯТ" */
+#rec1036700436, /* блок "ВХОДЯТ" */
+#rec1036706841  /* красный отступ после блока "ВХОДЯТ" */
+{
+  width: 100vw !important; 
+  max-width: 100vw !important; 
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  position: relative !important; 
+  left: 50% !important;
+  transform: translateX(-50%) !important; 
+  box-sizing: border-box !important;
 }
 
 /* Скрытие блока "Made on Tilda" */
@@ -204,15 +224,15 @@
       var stickyButton = document.getElementById('sticky-book-button');
       var bookBlock = document.getElementById('book'); 
       
-      // ===> ВАЖНО: Укажите ID ВАШИХ блоков с портретами авторов! <===
-      var authorBlockIDs = ['rec1036890941', 'rec1036956216']; // Пример ID из вашего предыдущего HTML
-      var authorBlocks = authorBlockIDs.map(function(id) { return document.getElementById(id); }).filter(function(el) { return el !== null; });
+      // Логика для скрытия у блоков авторов УДАЛЕНА
+      // var authorBlockIDs = ['rec1036890941', '#rec1036956216']; 
+      // var authorBlocks = authorBlockIDs.map(function(id) { return document.getElementById(id); }).filter(function(el) { return el !== null; });
 
       if (!stickyButton) { return; }
 
       var showButtonAfterScroll = 300; 
       var activeScreenWidth = 980; 
-      var hideWhenBookBlockTopIsNear = window.innerHeight * 0.85; // Скрывать, когда до верха блока #book остается ~15% высоты окна снизу
+      var hideWhenBookBlockTopIsNear = window.innerHeight * 0.85; 
 
       function checkButtonVisibility() {
         if (window.innerWidth > activeScreenWidth) {
@@ -225,30 +245,9 @@
         
         var shouldShowBasedOnInitialScroll = scrollPosition > showButtonAfterScroll;
         var shouldHideDueToBookBlock = false;
-        var shouldHideDueToAuthorOverlap = false;
+        // var shouldHideDueToAuthorOverlap = false; // Эта переменная больше не нужна
 
-        // 1. Проверка на перекрытие с блоками авторов
-        // === ИЗМЕНЕННАЯ ЛОГИКА ===
-        if (authorBlocks.length > 0) {
-          var buttonRect = stickyButton.getBoundingClientRect(); // Координаты кнопки относительно вьюпорта
-          for (var i = 0; i < authorBlocks.length; i++) {
-            var authorRect = authorBlocks[i].getBoundingClientRect(); // Координаты блока автора относительно вьюпорта
-
-            // Проверяем, виден ли блок автора хотя бы частично
-            var authorIsVisible = authorRect.top < windowHeight && authorRect.bottom > 0;
-
-            if (authorIsVisible) {
-              // Проверяем вертикальное пересечение кнопки и блока автора
-              var verticalOverlap = buttonRect.top < authorRect.bottom && buttonRect.bottom > authorRect.top;
-              if (verticalOverlap) {
-                shouldHideDueToAuthorOverlap = true;
-                break; 
-              }
-            }
-          }
-        }
-
-        // 2. Проверка на достижение блока #book
+        // Проверка на достижение блока #book (или конца страницы, если #book нет)
         if (bookBlock) {
           var bookBlockRect = bookBlock.getBoundingClientRect();
           if (bookBlockRect.top < hideWhenBookBlockTopIsNear) {
@@ -262,7 +261,8 @@
           }
         }
 
-        if (shouldShowBasedOnInitialScroll && !shouldHideDueToAuthorOverlap && !shouldHideDueToBookBlock) {
+        // Итоговое решение о видимости (теперь без учета shouldHideDueToAuthorOverlap)
+        if (shouldShowBasedOnInitialScroll && !shouldHideDueToBookBlock) {
           stickyButton.classList.add('sticky-button--visible');
         } else {
           stickyButton.classList.remove('sticky-button--visible');
@@ -297,21 +297,23 @@
 })();
 ```
 
-**Ключевые изменения в этом файле:**
+**Ключевые изменения в JavaScript-части (`setupStickyButtonVisibility`):**
 
-* **CSS для `#sticky-book-button`:**
-    * `top: 25%;` (для размещения в середине верхней половины правого края).
-    * `right: 25px;` (возвращен ваш предпочтительный отступ).
-    * `transform: translateY(-50%) scale(0.8);` (и аналогично для `:hover` и `.sticky-button--visible` состояний) для корректного вертикального центрирования.
-* **JavaScript для `setupStickyButtonVisibility()`:**
-    * **`authorBlockSelectors`**: **Обязательно замените** `['#rec1036890941', '#rec1036956216']` на актуальные ID ваших блоков с портретами авторов.
-    * **Логика `shouldHideDueToAuthorOverlap`:** Теперь она проверяет, виден ли блок автора на экране, и если да, то есть ли вертикальное пересечение между плавающей кнопкой и этим блоком автора. Если пересечение есть, кнопка будет скрыта. Это более прямой способ предотвратить наложение на видимые портреты.
-    * **`hideWhenBookBlockTopIsNear`**: Немного изменил комментарий для ясности. Это расстояние от верха окна, при котором, если верх блока `#book` поднимется выше этой точки, кнопка скроется.
+1.  **Удалены строки, связанные с `authorBlockSelectors` и `authorBlocks`:**
+    ```javascript
+    // var authorBlockIDs = ['rec1036890941', '#rec1036956216']; // Удалено или закомментировано
+    // var authorBlocks = authorBlockIDs.map(function(id) { return document.getElementById(id); }).filter(function(el) { return el !== null; }); // Удалено или закомментировано
+    ```
+2.  **Удалена переменная `shouldHideDueToAuthorOverlap`** и вся логика проверки на пересечение с блоками авторов (цикл `for` и связанные с ним условия).
+3.  **Условие для показа кнопки теперь проще:**
+    ```javascript
+    if (shouldShowBasedOnInitialScroll && !shouldHideDueToBookBlock) {
+      stickyButton.classList.add('sticky-button--visible');
+    } else {
+      stickyButton.classList.remove('sticky-button--visible');
+    }
+    ```
 
-**После того как вы обновите файл `code.js` на GitHub этим содержимым:**
+Теперь плавающая кнопка будет появляться после прокрутки на 300px и исчезать только при приближении к блоку `#book` (или к концу страницы), без учета блоков с портретами авторов.
 
-1.  Подождите несколько минут, пока GitHub Pages обновит кэш.
-2.  **Переопубликуйте все страницы вашего сайта Tilda.**
-3.  Проверьте результат в режиме инкогнито или после жесткой перезагрузки (Ctrl+Shift+R или Cmd+Shift+R).
-
-Надеюсь, эти изменения помогут достичь желаемого поведения кноп
+**Пожалуйста, обновите ваш файл `code.js` на GitHub этим кодом, переопубликуйте сайт Tilda и проверьте
