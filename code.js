@@ -1,6 +1,9 @@
 // Обертка для всего кода, чтобы избежать конфликтов глобальных переменных
 (function() {
 
+    // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
+    var SCRIPT_VERSION = "2.0"; // Измените это значение при каждой новой редакции
+
     // --- НАЧАЛО БЛОКА CSS-СТИЛЕЙ ---
     var cssStyles = `
 /*
@@ -8,6 +11,20 @@
   ОБЩИЕ СТИЛИ И СТИЛИ ДЛЯ КНОПОК НА САЙТЕ TILDA
   ====================================================================
 */
+
+/* --- Стиль для отображения версии скрипта --- */
+.script-version-display {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+  z-index: 100000; /* Очень высокий z-index, чтобы быть поверх всего */
+  border-radius: 3px;
+}
 
 /* --- Скрытие стандартного Tilda "flash" эффекта --- */
 .t-btn[data-btneffects-first="btneffects-flash"] .t-btn_wrap-effects,
@@ -154,44 +171,34 @@
   background-position: center center !important; 
 }
 
-/* ====================================================================
-  Стили для изображения "кулис" (#rec1036627011)
-  - Шире экрана, полупрозрачное, плавное появление
-  ====================================================================
-*/
-#rec1036627011 { /* Весь блок с изображением кулис */
-  width: 200vw !important; /* Ширина в два раза больше экрана */
+/* --- Стили для изображения "кулис" (#rec1036627011) --- */
+#rec1036627011 { 
+  width: 200vw !important; 
   max-width: 200vw !important;
   position: relative !important;
   left: 50% !important;
-  transform: translateX(-50%) !important; /* Центрирование блока 200vw */
-  overflow: hidden !important; /* Предотвращаем горизонтальный скролл */
-  
-  /* Начальное состояние для анимации появления */
+  transform: translateX(-50%) !important; 
+  overflow: hidden !important; 
   opacity: 0;
-  /* transform: translateY(20px); /* Опционально: легкий сдвиг вверх при появлении */
   transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
-
 #rec1036627011.curtain-image-is-visible {
-  opacity: 0.4 !important; /* Полупрозрачность (40%). Настройте по вкусу (0.3 - 0.7) */
-  /* transform: translateY(0) !important; */
+  opacity: 0.4 !important; 
 }
-
-#rec1036627011 .t107 .t-img { /* Само изображение внутри блока */
-  border-radius: 0 !important; /* Убираем скругление, если было */
+#rec1036627011 .t107 .t-img { 
+  border-radius: 0 !important; 
   border: none !important;
   padding: 0 !important;
-  width: 100% !important; /* Изображение занимает всю ширину своего 200vw родителя */
-  height: auto !important; /* Сохраняем пропорции */
-  /* Прозрачность теперь управляется родительским блоком #rec1036627011 */
+  width: 100% !important; 
+  height: auto !important; 
 }
 
-
-/* Скрытие блока "Made on Tilda" */
+/* Блок "Made on Tilda" БОЛЬШЕ НЕ СКРЫВАЕТСЯ этим скриптом */
+/*
 #tildacopy { 
   display: none !important;
 }
+*/
     `; // --- КОНЕЦ БЛОКА CSS-СТИЛЕЙ ---
 
     function addStylesToHead(css) {
@@ -209,16 +216,14 @@
 
     // --- НАЧАЛО БЛОКА JAVASCRIPT-ЛОГИКИ ---
     
-    function attemptToHideTildaBadge() {
-      var tildaBadge = document.getElementById('tildacopy'); 
-      if (tildaBadge) {
-        tildaBadge.setAttribute('style', 
-          'display: none !important; visibility: hidden !important; opacity: 0 !important; ' +
-          'width: 0px !important; height: 0px !important; margin: 0px !important; padding: 0px !important; ' +
-          'border: none !important; position: absolute !important; left: -9999px !important; top: -9999px !important;'
-        );
-      }
+    function displayScriptVersion() {
+        var versionDisplay = document.createElement('div');
+        versionDisplay.className = 'script-version-display';
+        versionDisplay.textContent = 'Редакция скрипта: ' + SCRIPT_VERSION;
+        document.body.appendChild(versionDisplay);
     }
+    
+    // Функция attemptToHideTildaBadge() и ее вызовы удалены
 
     function setupStickyButtonVisibility() {
       var stickyButton = document.getElementById('sticky-book-button');
@@ -267,97 +272,43 @@
       setTimeout(checkButtonVisibility, 300); 
     }
 
-    // ===> НОВЫЙ JAVASCRIPT ДЛЯ АНИМАЦИИ ИЗОБРАЖЕНИЯ "КУЛИС" <===
     function setupCurtainImageAnimation() {
-      var curtainImageBlock = document.getElementById('rec1036627011'); // ID вашего блока с изображением кулис
+      var curtainImageBlock = document.getElementById('rec1036627011'); 
       if (!curtainImageBlock) {
-        // console.log('Curtain image block #rec1036627011 not found.');
         return;
       }
-
-      var observerOptions = {
-        root: null, // Относительно окна просмотра
-        rootMargin: '0px',
-        threshold: 0.1 // Сработает, когда 10% элемента станет видимым
-      };
-
+      var observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
       var observer = new IntersectionObserver(function(entries, observerInstance) {
         entries.forEach(function(entry) {
           if (entry.isIntersecting) {
             entry.target.classList.add('curtain-image-is-visible');
-            // Можно раскомментировать, если хотите, чтобы анимация сработала только один раз:
-            // observerInstance.unobserve(entry.target); 
           } else {
-            // Если хотите, чтобы изображение снова становилось прозрачным, когда уходит из вида:
-            // entry.target.classList.remove('curtain-image-is-visible');
+            // entry.target.classList.remove('curtain-image-is-visible'); 
           }
         });
       }, observerOptions);
-
       observer.observe(curtainImageBlock);
     }
 
-
-    // Выполнение функций после полной загрузки DOM
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             addStylesToHead(cssStyles);
-            attemptToHideTildaBadge(); 
+            displayScriptVersion(); 
             setupStickyButtonVisibility();
-            setupCurtainImageAnimation(); // <=== ВЫЗОВ НОВОЙ ФУНКЦИИ
-            setTimeout(attemptToHideTildaBadge, 1000);
-            setTimeout(attemptToHideTildaBadge, 2500);
+            setupCurtainImageAnimation(); 
         });
     } else { 
         addStylesToHead(cssStyles);
-        attemptToHideTildaBadge();
+        displayScriptVersion();
         setupStickyButtonVisibility();
-        setupCurtainImageAnimation(); // <=== ВЫЗОВ НОВОЙ ФУНКЦИИ
-        setTimeout(attemptToHideTildaBadge, 1000);
-        setTimeout(attemptToHideTildaBadge, 2500);
+        setupCurtainImageAnimation(); 
     }
     
     window.addEventListener('load', function() {
-        setTimeout(attemptToHideTildaBadge, 500);
-        // Можно и здесь вызвать setupCurtainImageAnimation, если есть проблемы с определением размеров элементов раньше
-        // setTimeout(setupCurtainImageAnimation, 100); 
+        if (!document.querySelector('.script-version-display')) {
+            displayScriptVersion();
+        }
     });
 
-})();
+})(); // --- КОНЕЦ ОБЕРТКИ И JAVASCRIPT-ЛОГИКИ (больше никаких комментариев после этой строки)
 ```
-
-**Ключевые изменения в этом файле:**
-
-* **В CSS-части добавлен новый блок:**
-    ```css
-    /* ====================================================================
-      Стили для изображения "кулис" (#rec1036627011)
-      - Шире экрана, полупрозрачное, плавное появление
-      ====================================================================
-    */
-    #rec1036627011 { /* Весь блок с изображением кулис */
-      width: 200vw !important; /* Ширина в два раза больше экрана */
-      max-width: 200vw !important;
-      position: relative !important;
-      left: 50% !important;
-      transform: translateX(-50%) !important; /* Центрирование блока 200vw */
-      overflow: hidden !important; /* Предотвращаем горизонтальный скролл */
-      
-      /* Начальное состояние для анимации появления */
-      opacity: 0;
-      /* transform: translateY(20px); /* Опционально: легкий сдвиг вверх при появлении */
-      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-
-    #rec1036627011.curtain-image-is-visible {
-      opacity: 0.4 !important; /* Полупрозрачность (40%). Настройте по вкусу (0.3 - 0.7) */
-      /* transform: translateY(0) !important; */
-    }
-
-    #rec1036627011 .t107 .t-img { /* Само изображение внутри блока */
-      border-radius: 0 !important; /* Убираем скругление, если было */
-      border: none !important;
-      padding: 0 !important;
-      width: 100% !important; /* Изображение занимает всю ширину своего 200vw родителя */
-      height: auto !important; /* Сохраняем пропорции */
-    }
