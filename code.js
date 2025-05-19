@@ -6,7 +6,6 @@
 /*
   ====================================================================
   ОБЩИЕ СТИЛИ И СТИЛИ ДЛЯ КНОПОК НА САЙТЕ TILDA
-  (Версия для одного файла code.js)
   ====================================================================
 */
 
@@ -153,24 +152,41 @@
   background-size: contain !important; 
   background-repeat: no-repeat !important; 
   background-position: center center !important; 
-  /* background-color: #ffffff !important; */ /* Раскомментируйте и настройте, если нужен фон для пустых полей */
 }
 
 /* ====================================================================
-  Изображение над "Авторские маршруты" (#rec1036627011) без скругленных границ
+  Стили для изображения "кулис" (#rec1036627011)
+  - Шире экрана, полупрозрачное, плавное появление
   ====================================================================
 */
-#rec1036627011 .t107 .t-img {
-  border-radius: 0 !important; /* Убираем скругление углов */
-  border: none !important;     /* Убираем возможные рамки */
-  padding: 0 !important;      /* Убираем возможные внутренние отступы */
-  /* Если изображение имеет класс t-width_100 (как в вашем HTML), оно будет на всю ширину контейнера. 
-     Если нужно ограничить его ширину, можно добавить, например:
-     max-width: 500px !important; 
-     margin-left: auto !important;
-     margin-right: auto !important;
-  */
+#rec1036627011 { /* Весь блок с изображением кулис */
+  width: 200vw !important; /* Ширина в два раза больше экрана */
+  max-width: 200vw !important;
+  position: relative !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important; /* Центрирование блока 200vw */
+  overflow: hidden !important; /* Предотвращаем горизонтальный скролл */
+  
+  /* Начальное состояние для анимации появления */
+  opacity: 0;
+  /* transform: translateY(20px); /* Опционально: легкий сдвиг вверх при появлении */
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
 }
+
+#rec1036627011.curtain-image-is-visible {
+  opacity: 0.4 !important; /* Полупрозрачность (40%). Настройте по вкусу (0.3 - 0.7) */
+  /* transform: translateY(0) !important; */
+}
+
+#rec1036627011 .t107 .t-img { /* Само изображение внутри блока */
+  border-radius: 0 !important; /* Убираем скругление, если было */
+  border: none !important;
+  padding: 0 !important;
+  width: 100% !important; /* Изображение занимает всю ширину своего 200vw родителя */
+  height: auto !important; /* Сохраняем пропорции */
+  /* Прозрачность теперь управляется родительским блоком #rec1036627011 */
+}
+
 
 /* Скрытие блока "Made on Tilda" */
 #tildacopy { 
@@ -251,11 +267,44 @@
       setTimeout(checkButtonVisibility, 300); 
     }
 
+    // ===> НОВЫЙ JAVASCRIPT ДЛЯ АНИМАЦИИ ИЗОБРАЖЕНИЯ "КУЛИС" <===
+    function setupCurtainImageAnimation() {
+      var curtainImageBlock = document.getElementById('rec1036627011'); // ID вашего блока с изображением кулис
+      if (!curtainImageBlock) {
+        // console.log('Curtain image block #rec1036627011 not found.');
+        return;
+      }
+
+      var observerOptions = {
+        root: null, // Относительно окна просмотра
+        rootMargin: '0px',
+        threshold: 0.1 // Сработает, когда 10% элемента станет видимым
+      };
+
+      var observer = new IntersectionObserver(function(entries, observerInstance) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('curtain-image-is-visible');
+            // Можно раскомментировать, если хотите, чтобы анимация сработала только один раз:
+            // observerInstance.unobserve(entry.target); 
+          } else {
+            // Если хотите, чтобы изображение снова становилось прозрачным, когда уходит из вида:
+            // entry.target.classList.remove('curtain-image-is-visible');
+          }
+        });
+      }, observerOptions);
+
+      observer.observe(curtainImageBlock);
+    }
+
+
+    // Выполнение функций после полной загрузки DOM
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             addStylesToHead(cssStyles);
             attemptToHideTildaBadge(); 
             setupStickyButtonVisibility();
+            setupCurtainImageAnimation(); // <=== ВЫЗОВ НОВОЙ ФУНКЦИИ
             setTimeout(attemptToHideTildaBadge, 1000);
             setTimeout(attemptToHideTildaBadge, 2500);
         });
@@ -263,12 +312,52 @@
         addStylesToHead(cssStyles);
         attemptToHideTildaBadge();
         setupStickyButtonVisibility();
+        setupCurtainImageAnimation(); // <=== ВЫЗОВ НОВОЙ ФУНКЦИИ
         setTimeout(attemptToHideTildaBadge, 1000);
         setTimeout(attemptToHideTildaBadge, 2500);
     }
     
     window.addEventListener('load', function() {
         setTimeout(attemptToHideTildaBadge, 500);
+        // Можно и здесь вызвать setupCurtainImageAnimation, если есть проблемы с определением размеров элементов раньше
+        // setTimeout(setupCurtainImageAnimation, 100); 
     });
 
 })();
+```
+
+**Ключевые изменения в этом файле:**
+
+* **В CSS-части добавлен новый блок:**
+    ```css
+    /* ====================================================================
+      Стили для изображения "кулис" (#rec1036627011)
+      - Шире экрана, полупрозрачное, плавное появление
+      ====================================================================
+    */
+    #rec1036627011 { /* Весь блок с изображением кулис */
+      width: 200vw !important; /* Ширина в два раза больше экрана */
+      max-width: 200vw !important;
+      position: relative !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important; /* Центрирование блока 200vw */
+      overflow: hidden !important; /* Предотвращаем горизонтальный скролл */
+      
+      /* Начальное состояние для анимации появления */
+      opacity: 0;
+      /* transform: translateY(20px); /* Опционально: легкий сдвиг вверх при появлении */
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    #rec1036627011.curtain-image-is-visible {
+      opacity: 0.4 !important; /* Полупрозрачность (40%). Настройте по вкусу (0.3 - 0.7) */
+      /* transform: translateY(0) !important; */
+    }
+
+    #rec1036627011 .t107 .t-img { /* Само изображение внутри блока */
+      border-radius: 0 !important; /* Убираем скругление, если было */
+      border: none !important;
+      padding: 0 !important;
+      width: 100% !important; /* Изображение занимает всю ширину своего 200vw родителя */
+      height: auto !important; /* Сохраняем пропорции */
+    }
