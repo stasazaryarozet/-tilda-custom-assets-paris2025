@@ -4,7 +4,7 @@
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
     var SCRIPT_VERSION = "3.2";
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
-    var DEBUG_SHOW_SCRIPT_VERSION = true;
+    var DEBUG_SHOW_SCRIPT_VERSION = false;
 
     // --- НАЧАЛО БЛОКА CSS-СТИЛЕЙ ---
     var cssStyles = `
@@ -54,7 +54,7 @@
   isolation: isolate !important; 
   border-radius: 7px !important;
   box-shadow: 0px 2px 3px rgba(0, 11, 48, 0.25) !important;
-  letter-spacing: 0.02em !important; 
+  letter-spacing: 0.04em !important; 
   font-weight: bold !important; 
   font-size: 18px !important;
   transition-duration: 0.6s !important; 
