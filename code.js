@@ -2,7 +2,7 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.6"; 
+    var SCRIPT_VERSION = "2.7"; 
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
     var DEBUG_SHOW_SCRIPT_VERSION = true; 
 
@@ -208,18 +208,27 @@
 @media screen and (min-width: 980px) {
   #rec1036848416 .t-cover,
   #rec1036848416 .t-cover__carrier {
-    height: 88vh !important; 
-    min-height: 500px !important; /* Минимальная высота для очень низких экранов */
-    max-height: 700px !important; /* Ограничение максимальной высоты */
+    height: 88vh !important; /* Высота обложки */
+    min-height: 500px !important; /* Минимальная высота */
+    max-height: 700px !important; /* Максимальная высота */
   }
   
   #rec1036848416 .t-cover__wrapper.t-valign_middle {
       height: 100% !important; /* Позволяет Tilda центрировать контент в рамках новой высоты */
-      /* Если нужно сместить контент выше, можно попробовать: */
-      /* padding-top: 10vh !important; */ /* Уменьшить отступ сверху */
-      /* padding-bottom: 10vh !important; */ /* Увеличить отступ снизу, чтобы контент поднялся */
-      /* display: flex; align-items: flex-start; padding-top: 10vh; */ /* Это более радикальный метод, если просто height:100% не помогает */
+      /* Убираем предыдущие попытки изменить display, justify-content и padding-top */
   }
+
+  /* Опционально: если контент все еще слишком низко, можно попробовать немного "поднять" 
+     контейнер .t182__wrapper (внутри которого заголовки, описание, кнопка).
+     Начните с небольших отрицательных значений margin-top или положительных padding-top для родителя.
+     Это нужно делать аккуратно, чтобы не сломать адаптивность.
+  */
+  /*
+  #rec1036848416 .t182__wrapper {
+     padding-top: 5vh !important; // Пример: добавить отступ сверху к контенту
+     margin-bottom: 5vh !important; // Пример: добавить отступ снизу, чтобы контент не прилипал к низу обложки
+  }
+  */
 }
     `; // --- КОНЕЦ БЛОКА CSS-СТИЛЕЙ ---
 
