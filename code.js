@@ -2,9 +2,8 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.3"; // Изменено для отражения правок
+    var SCRIPT_VERSION = "2.4"; // Изменено для отражения правок
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
-    // Установите 'false', чтобы скрыть отображение версии
     var DEBUG_SHOW_SCRIPT_VERSION = true;
 
     // --- НАЧАЛО БЛОКА CSS-СТИЛЕЙ ---
@@ -27,15 +26,6 @@
   font-family: Arial, sans-serif;
   z-index: 100000;
   border-radius: 3px;
-  /* По умолчанию скрыт, если DEBUG_SHOW_SCRIPT_VERSION = false */
-  /* display: none; /* Управляется JS */
-}
-
-/* --- Сокращение верхнего поля первого блока на десктопе --- */
-@media screen and (min-width: 980px) {
-  #rec1036848416 { /* ID первого главного блока на десктопе (обложка) */
-    padding-top: 30px !important; /* Уменьшаем верхний отступ */
-  }
 }
 
 /* --- Скрытие стандартного Tilda "flash" эффекта --- */
@@ -125,7 +115,7 @@
   background-color: #ffffff !important; 
   color: #333333 !important;          
   border-radius: 50% !important;
-  display: none; 
+  display: none; /* Изначально скрыта, управляется JS */
   justify-content: center;
   align-items: center;
   text-decoration: none;
@@ -138,15 +128,15 @@
   -webkit-tap-highlight-color: transparent;
 }
 #sticky-book-button.sticky-button--visible {
-  display: flex !important;
+  display: flex !important; /* Используем flex для отображения */
   opacity: 0.75; 
   visibility: visible;
-  transform: translateY(-50%) scale(1);
+  transform: translateY(-50%) scale(1); /* Базовый масштаб для мобильных */
 }
 #sticky-book-button:hover {
   background-color: #f8f8f8 !important; 
   color: #000000 !important;
-  transform: translateY(-50%) scale(1.08) !important; 
+  transform: translateY(-50%) scale(1.08) !important; /* Увеличение при наведении для мобильных */
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25) !important; 
   opacity: 1 !important;
 }
@@ -155,9 +145,19 @@
   height: 50%;
   fill: currentColor; 
 }
+
+/* Стили для кнопки на больших экранах */
 @media screen and (min-width: 981px) { 
   #sticky-book-button {
-     display: none !important; 
+    width: 70px !important; /* Увеличиваем размер */
+    height: 70px !important;
+    /* transform: translateY(-50%) scale(1.15) !important; /* Увеличиваем базовый масштаб */
+  }
+   #sticky-book-button.sticky-button--visible {
+     transform: translateY(-50%) scale(1.15) !important; /* Базовый масштаб для десктопа */
+   }
+  #sticky-book-button:hover {
+    transform: translateY(-50%) scale(1.25) !important; /* Увеличение при наведении для десктопа */
   }
 }
 
@@ -213,6 +213,19 @@
   border: none !important;
 }
 
+/* Стили для ссылки "подробности" в форме */
+.form-details-link-wrapper {
+  text-align: center; /* Центрируем ссылку */
+  margin-top: 8px; /* Отступ сверху от "до 12 участников" */
+}
+.form-details-link-wrapper a {
+  font-size: 14px;
+  font-weight: normal;
+  text-decoration: underline;
+  color: #ffffff; 
+  display: inline-block; /* Чтобы отступы работали корректно */
+}
+
 /* Блок "Made on Tilda" БОЛЬШЕ НЕ СКРЫВАЕТСЯ этим скриптом */
 /*
 #tildacopy { 
@@ -237,7 +250,6 @@
     // --- НАЧАЛО БЛОКА JAVASCRIPT-ЛОГИКИ ---
    
     function displayScriptVersion() {
-        // ===> Функция будет выполняться только если DEBUG_SHOW_SCRIPT_VERSION === true <===
         if (!DEBUG_SHOW_SCRIPT_VERSION) {
             return;
         }
@@ -254,14 +266,15 @@
       if (!stickyButton) { return; }
 
       var showButtonAfterScroll = 300; 
-      var activeScreenWidth = 980; 
+      // var activeScreenWidth = 980; // Убрали ограничение по ширине экрана для показа кнопки
       var hideWhenBookBlockTopIsNear = window.innerHeight * 0.85; 
 
       function checkButtonVisibility() {
-        if (window.innerWidth > activeScreenWidth) {
-          stickyButton.classList.remove('sticky-button--visible');
-          return;
-        }
+        // Убрали условие:
+        // if (window.innerWidth > activeScreenWidth) {
+        //   stickyButton.classList.remove('sticky-button--visible');
+        //   return;
+        // }
 
         var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
         var windowHeight = window.innerHeight;
@@ -310,31 +323,21 @@
       observer.observe(curtainImageBlock);
     }
 
-    // Функция для добавления ссылки "подробности" в форму регистрации
     function addDetailsLinkToForm() {
-        var descrElement = document.querySelector('#rec1037978986 .t696__descr'); // Ищем блок с текстом "ДО 12 УЧАСТНИКОВ"
+        var descrElement = document.querySelector('#rec1037978986 .t696__descr');
         
-        if (descrElement) {
-            // Проверяем, не была ли ссылка уже добавлена
-            if (descrElement.querySelector('a[href="#bottomline"]')) {
-                return; 
-            }
+        if (descrElement && !descrElement.parentNode.querySelector('.form-details-link-wrapper')) {
+            var linkWrapper = document.createElement('div');
+            linkWrapper.className = 'form-details-link-wrapper';
 
             var detailsLink = document.createElement('a');
             detailsLink.href = '#bottomline';
             detailsLink.textContent = 'подробности';
             
-            // Стили для ссылки, чтобы она выглядела аккуратно
-            detailsLink.style.fontSize = '14px'; // Меньше основного текста
-            detailsLink.style.fontWeight = 'normal'; // Не жирный
-            detailsLink.style.textDecoration = 'underline';
-            detailsLink.style.color = '#ffffff'; // Белый цвет, как у остального текста в форме
-            detailsLink.style.marginLeft = '8px'; // Небольшой отступ слева
-            detailsLink.style.display = 'inline'; // Чтобы ссылка была в той же строке
-
-            // Добавляем пробел и ссылку после существующего текста
-            descrElement.appendChild(document.createTextNode(' ')); 
-            descrElement.appendChild(detailsLink);
+            linkWrapper.appendChild(detailsLink);
+            
+            // Вставляем обертку со ссылкой после элемента .t696__descr
+            descrElement.parentNode.insertBefore(linkWrapper, descrElement.nextSibling);
         }
     }
 
@@ -344,21 +347,20 @@
             displayScriptVersion(); 
             setupStickyButtonVisibility();
             setupCurtainImageAnimation(); 
-            addDetailsLinkToForm(); // Добавляем ссылку "подробности"
+            addDetailsLinkToForm();
         });
     } else { 
         addStylesToHead(cssStyles);
         displayScriptVersion();
         setupStickyButtonVisibility();
         setupCurtainImageAnimation(); 
-        addDetailsLinkToForm(); // Добавляем ссылку "подробности"
+        addDetailsLinkToForm();
     }
    
     window.addEventListener('load', function() {
         if (DEBUG_SHOW_SCRIPT_VERSION && !document.querySelector('.script-version-display')) {
             displayScriptVersion();
         }
-        // Дополнительный вызов на случай, если форма загружается позже
         addDetailsLinkToForm(); 
     });
 
