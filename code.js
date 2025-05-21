@@ -2,7 +2,7 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.7"; 
+    var SCRIPT_VERSION = "2.8"; 
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
     var DEBUG_SHOW_SCRIPT_VERSION = true; 
 
@@ -203,32 +203,42 @@
   border: none !important;
 }
 
-/* === ИЗМЕНЕНИЯ ДЛЯ ОБЛОЖКИ НА ДЕСКТОПЕ (#rec1036848416) === */
+/* === ИЗМЕНЕНИЯ ДЛЯ ОБЛОЖКИ НА ДЕСКТОПЕ (#rec1036848416) - ГАРАНТИРОВАННОЕ ОТОБРАЖЕНИЕ КНОПКИ === */
 @media screen and (min-width: 980px) {
   #rec1036848416 .t-cover,
   #rec1036848416 .t-cover__carrier {
-    height: 85vh !important; 
-    min-height: 500px !important; 
-    /* Добавляем overflow: hidden; чтобы контент, выходящий за 85vh, обрезался */
-    overflow: hidden !important; 
+    height: auto !important; /* Позволяем обложке растягиваться по контенту */
+    min-height: 70vh !important; /* Минимальная высота, чтобы не была слишком маленькой, если контента мало */
+    padding-bottom: 30px !important; /* Добавляем отступ снизу, чтобы кнопка точно не прилипала */
   }
   
   #rec1036848416 .t-cover__wrapper.t-valign_middle {
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important; 
-    height: 100% !important; 
-    padding-top: 3vh !important;   /* ===> ЕЩЕ УМЕНЬШЕННЫЙ верхний отступ (3% от высоты окна) <=== */
-    padding-bottom: 3vh !important; /* Симметричный нижний отступ */
+    justify-content: center !important; /* Центрируем контент по вертикали */
+    height: auto !important; /* Высота по содержимому */
+    min-height: inherit !important; /* Наследуем min-height от родителя */
+    padding-top: max(5vh, 30px) !important;   /* Верхний отступ: 5% от высоты окна, но не менее 30px */
+    padding-bottom: max(5vh, 30px) !important; /* Нижний отступ */
     box-sizing: border-box !important;
   }
 
   #rec1036848416 .t182__wrapper {
-     /* Позволяем этому блоку сжиматься и расти, но не выходить за пределы родителя */
-     flex-shrink: 1;
-     flex-grow: 0; /* Не будет растягиваться, если мало контента */
-     max-height: 100%; /* Ограничиваем максимальную высоту, чтобы поместился в .t-cover__wrapper */
-     /* overflow-y: auto; /* Если контента СЛИШКОМ много, появится внутренний скролл для текста */
+     width: 100%; /* Чтобы занимал всю доступную ширину в контейнере */
+     max-width: 640px; /* Ограничение ширины контента, как в Tilda по умолчанию для этого блока */
+     margin-left: auto;
+     margin-right: auto;
+  }
+
+  /* Уменьшаем отступы между элементами внутри обложки, если они заданы Tilda по умолчанию */
+  #rec1036848416 .t182__title {
+      margin-bottom: 20px !important; /* Уменьшаем отступ под заголовком */
+  }
+  #rec1036848416 .t182__descr {
+      margin-bottom: 30px !important; /* Уменьшаем отступ под описанием */
+  }
+  #rec1036848416 .t182__buttons {
+      margin-top: 0 !important; /* Убираем верхний отступ у блока с кнопкой, если он есть */
   }
 }
 
@@ -365,25 +375,38 @@
 @media screen and (min-width: 980px) {
   #rec1036848416 .t-cover,
   #rec1036848416 .t-cover__carrier {
-    height: 85vh !important; 
-    min-height: 500px !important; 
-    overflow: hidden !important; /* Добавлено, чтобы обрезать контент, выходящий за 85vh */
+    height: auto !important; /* Позволяем обложке растягиваться по контенту */
+    min-height: 70vh !important; /* Минимальная высота, чтобы не была слишком маленькой */
+    padding-bottom: 30px !important; /* Добавляем отступ снизу, чтобы кнопка точно не прилипала к краю */
   }
   
   #rec1036848416 .t-cover__wrapper.t-valign_middle {
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important; 
-    height: 100% !important; 
-    padding-top: 3vh !important;   /* ===> ЕЩЕ УМЕНЬШЕН верхний отступ до 3vh <=== */
-    padding-bottom: 3vh !important; /* Симметричный нижний отступ */
+    height: auto !important; /* Высота по содержимому */
+    min-height: inherit !important; /* Наследуем min-height от родителя */
+    padding-top: max(5vh, 30px) !important;   /* Верхний отступ: большее из 5% высоты окна или 30px */
+    padding-bottom: max(5vh, 30px) !important; /* Нижний отступ: большее из 5% высоты окна или 30px */
     box-sizing: border-box !important;
   }
 
   #rec1036848416 .t182__wrapper {
-     flex-shrink: 1; /* Позволяет блоку сжиматься, если не хватает места */
-     flex-grow: 0;   /* Не будет растягиваться, если мало контента */
-     max-height: 100%; /* Ограничиваем максимальную высоту, чтобы поместился в .t-cover__wrapper */
-     /* overflow-y: auto; /* Если контента СЛИШКОМ много, появится внутренний скролл для текста. Используйте, если не хотите обрезки. */
+     width: 100%; 
+     max-width: 640px; /* Стандартное ограничение Tilda для контента в обложке */
+     margin-left: auto;
+     margin-right: auto;
+     /* Можно также добавить flex-shrink: 0; чтобы этот блок не сжимался, если не нужно */
+  }
+
+  /* Уменьшаем стандартные отступы Tilda между элементами контента, если они слишком большие */
+  #rec1036848416 .t182__title {
+      margin-bottom: 20px !important; /* Уменьшаем отступ под заголовком */
+  }
+  #rec1036848416 .t182__descr {
+      margin-bottom: 30px !important; /* Уменьшаем отступ под описанием */
+  }
+  #rec1036848416 .t182__buttons {
+      margin-top: 0 !important; /* Убираем верхний отступ у блока с кнопкой, если он есть */
   }
 }
