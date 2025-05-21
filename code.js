@@ -2,7 +2,7 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.7"; 
+    var SCRIPT_VERSION = "2.6"; 
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
     var DEBUG_SHOW_SCRIPT_VERSION = true; 
 
@@ -19,14 +19,13 @@
   position: fixed;
   top: 10px;
   left: 10px;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.7);
   color: white;
   padding: 5px 10px;
   font-size: 12px;
   font-family: Arial, sans-serif;
-  z-index: 1000001; 
+  z-index: 100000; 
   border-radius: 3px;
-  pointer-events: none;
 }
 
 /* --- Скрытие стандартного Tilda "flash" эффекта --- */
@@ -208,28 +207,36 @@
 @media screen and (min-width: 980px) {
   #rec1036848416 .t-cover,
   #rec1036848416 .t-cover__carrier {
-    height: 88vh !important; /* Высота обложки */
-    min-height: 500px !important; /* Минимальная высота */
-    max-height: 700px !important; /* Максимальная высота */
+    height: 85vh !important; 
+    min-height: 500px !important; /* Минимальная высота для очень низких экранов */
   }
   
   #rec1036848416 .t-cover__wrapper.t-valign_middle {
-      height: 100% !important; /* Позволяет Tilda центрировать контент в рамках новой высоты */
-      /* Убираем предыдущие попытки изменить display, justify-content и padding-top */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important; /* Вертикальное центрирование контента внутри wrapper */
+    height: 100% !important; /* Обязательно, чтобы wrapper занял всю высоту обложки (85vh) */
+    padding-top: 5vh !important;   /* ===> УМЕНЬШЕННЫЙ верхний отступ (5% от высоты окна) <=== */
+    padding-bottom: 5vh !important; /* Небольшой симметричный нижний отступ */
+    box-sizing: border-box !important;
   }
 
-  /* Опционально: если контент все еще слишком низко, можно попробовать немного "поднять" 
-     контейнер .t182__wrapper (внутри которого заголовки, описание, кнопка).
-     Начните с небольших отрицательных значений margin-top или положительных padding-top для родителя.
-     Это нужно делать аккуратно, чтобы не сломать адаптивность.
-  */
-  /*
+  /* Убедимся, что внутренний контейнер с текстом не создает лишних отступов, мешающих центрированию */
   #rec1036848416 .t182__wrapper {
-     padding-top: 5vh !important; // Пример: добавить отступ сверху к контенту
-     margin-bottom: 5vh !important; // Пример: добавить отступ снизу, чтобы контент не прилипал к низу обложки
+     /* Можно попробовать сбросить или уменьшить его стандартные отступы, если они есть */
+     /* padding-top: 0 !important; */
+     /* padding-bottom: 0 !important; */
+     /* margin-top: 0 !important; */
+     /* margin-bottom: 0 !important; */
   }
-  */
 }
+
+/* Блок "Made on Tilda" БОЛЬШЕ НЕ СКРЫВАЕТСЯ этим скриптом */
+/*
+#tildacopy { 
+  display: none !important;
+}
+*/
     `; // --- КОНЕЦ БЛОКА CSS-СТИЛЕЙ ---
 
     function addStylesToHead(css) {
