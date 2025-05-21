@@ -2,7 +2,7 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.8";
+    var SCRIPT_VERSION = "2.9";
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
     var DEBUG_SHOW_SCRIPT_VERSION = true;
 
@@ -115,7 +115,7 @@
   background-color: #ffffff !important; 
   color: #333333 !important;          
   border-radius: 50% !important;
-  display: none; 
+  display: none; /* Изначально скрыта, управляется JS через класс */
   justify-content: center;
   align-items: center;
   text-decoration: none;
@@ -150,7 +150,7 @@
   #sticky-book-button {
     width: 70px !important; 
     height: 70px !important;
-    right: 40px !important; /* Увеличен отступ справа для широких экранов */
+    right: 40px !important; 
   }
    #sticky-book-button.sticky-button--visible {
      transform: translateY(-50%) scale(1.15) !important; 
@@ -262,78 +262,54 @@
    
     function setupStickyButtonVisibility() {
       var stickyButton = document.getElementById('sticky-book-button');
-      var bookBlock = document.getElementById('book'); // Форма регистрации
+      var bookBlock = document.getElementById('book'); // Форма регистрации (якорь)
+      var formBlockElement = document.getElementById('rec1037978986'); // Сам блок формы
       var contactsBlock = document.getElementById('rec1036743606'); // Блок с контактами (соцсети)
       
       if (!stickyButton) { return; }
 
       var showButtonAfterScroll = 300; 
-      var hideBuffer = 20; // Буфер в пикселях, чтобы кнопка исчезала чуть раньше касания
+      // Пороги для скрытия кнопки: когда ВЕРХНЯЯ ЧАСТЬ блока поднимается ВЫШЕ этого % от ВЫСОТЫ ОКНА
+      var hideThresholdBookBlock = 0.60; // Скрывать, если верх формы в верхних 60% окна
+      var hideThresholdContactsBlock = 0.75; // Скрывать, если верх контактов в верхних 75% окна
 
       function checkButtonVisibility() {
         var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        var windowHeight = window.innerHeight;
         
         var shouldShowBasedOnInitialScroll = scrollPosition > showButtonAfterScroll;
         var shouldHideDueToBookBlock = false;
         var shouldHideDueToContactsBlock = false;
-
-        // Получаем актуальные размеры и позицию кнопки только если она видима (или может стать видимой)
-        // Это нужно, т.к. getBoundingClientRect() для display:none вернет все по нулям.
-        // Но т.к. мы управляем видимостью через opacity и visibility, это должно быть ок.
-        var buttonRect = stickyButton.getBoundingClientRect();
-        var buttonBottomY = buttonRect.bottom;
         
-        if (bookBlock) {
-          var bookBlockRect = bookBlock.getBoundingClientRect();
-          // Скрываем, если верхняя часть блока формы поднимается выше нижней границы кнопки (минус буфер)
-          if (bookBlockRect.top < buttonBottomY + hideBuffer) { 
+        // Используем фактический элемент блока формы, если он есть, иначе якорь bookBlock
+        var actualBookBlockElement = formBlockElement || (bookBlock ? bookBlock.closest('.r') || bookBlock : null);
+
+
+        if (actualBookBlockElement) {
+          var bookBlockRect = actualBookBlockElement.getBoundingClientRect();
+          // Скрываем, если верхняя часть блока формы поднялась выше (windowHeight * hideThresholdBookBlock)
+          if (bookBlockRect.top < (windowHeight * hideThresholdBookBlock) ) { 
             shouldHideDueToBookBlock = true;
           }
         }
         
         if (contactsBlock) {
             var contactsBlockRect = contactsBlock.getBoundingClientRect();
-            // Скрываем, если верхняя часть блока контактов поднимается выше нижней границы кнопки (минус буфер)
-            if (contactsBlockRect.top < buttonBottomY + hideBuffer) {
+            if (contactsBlockRect.top < (windowHeight * hideThresholdContactsBlock)) {
                 shouldHideDueToContactsBlock = true;
             }
         }
 
-        // Дополнительное условие: если кнопка уже невидима (display:none), то buttonBottomY будет 0.
-        // В этом случае, если другие условия для показа не выполняются, она останется скрытой.
-        // Если же она должна появиться, но buttonBottomY = 0, это может вызвать проблему при первом показе.
-        // Однако, мы сначала делаем display:flex, а потом уже opacity/visibility, так что размеры должны быть доступны.
-
         if (shouldShowBasedOnInitialScroll && !shouldHideDueToBookBlock && !shouldHideDueToContactsBlock) {
-          if (stickyButton.style.display !== 'flex') { // Проверяем, чтобы не вызывать лишний раз, если уже flex
-            stickyButton.style.display = 'flex'; // Убедимся, что display:flex перед анимацией opacity
-          }
           stickyButton.classList.add('sticky-button--visible');
         } else {
           stickyButton.classList.remove('sticky-button--visible');
-          // Можно добавить задержку перед установкой display:none, если это вызывает проблемы с transition
-          // setTimeout(() => {
-          //    if (!stickyButton.classList.contains('sticky-button--visible')) {
-          //        stickyButton.style.display = 'none';
-          //    }
-          // }, 400); // 400ms - время transition
         }
       }
 
       window.addEventListener('scroll', checkButtonVisibility, { passive: true });
       window.addEventListener('resize', checkButtonVisibility);
-      // Вызываем сразу, чтобы определить начальное состояние
-      // и чтобы buttonRect был корректным при первой проверке
-      if (stickyButton.style.display !== 'flex') {
-          stickyButton.style.display = 'flex'; // Временно показать для получения размеров
-          checkButtonVisibility(); // Проверить
-          if (!stickyButton.classList.contains('sticky-button--visible')) { // Если по итогу проверки она не должна быть видима
-             stickyButton.style.display = 'none'; // Скрыть обратно
-          }
-      } else {
-          checkButtonVisibility();
-      }
-      // setTimeout(checkButtonVisibility, 100); // Небольшая задержка для инициализации
+      checkButtonVisibility(); // Первоначальная проверка состояния
     }
 
     function setupCurtainImageAnimation() {
@@ -389,8 +365,6 @@
         if (DEBUG_SHOW_SCRIPT_VERSION && !document.querySelector('.script-version-display')) {
             displayScriptVersion();
         }
-        // Повторный вызов setupStickyButtonVisibility и addDetailsLinkToForm на load для надежности,
-        // если какие-то элементы Tilda или размеры были не до конца определены на DOMContentLoaded
         setupStickyButtonVisibility(); 
         addDetailsLinkToForm(); 
     });
