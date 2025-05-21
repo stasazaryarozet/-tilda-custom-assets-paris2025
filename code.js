@@ -2,7 +2,7 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "3.1";
+    var SCRIPT_VERSION = "3.2";
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
     var DEBUG_SHOW_SCRIPT_VERSION = true;
 
@@ -28,15 +28,7 @@
   border-radius: 3px;
 }
 
-/* --- Сокращение верхнего отступа у главного заголовка на широких экранах --- */
-@media screen and (min-width: 981px) {
-  #rec1036848416 .t-cover__wrapper { /* ID блока обложки и его внутренний wrapper */
-    padding-top: 60px !important; /* Уменьшаем верхний отступ */
-    /* Если потребуется также уменьшить нижний для симметрии при сохранении высоты блока: */
-    /* padding-bottom: 60px !important; */
-  }
-}
-
+/* ОТКАТ: Удалено правило для #rec1036848416 .t-cover__wrapper */
 
 /* --- Скрытие стандартного Tilda "flash" эффекта --- */
 .t-btn[data-btneffects-first="btneffects-flash"] .t-btn_wrap-effects,
@@ -229,7 +221,7 @@
 }
 .form-details-link-wrapper a {
   font-size: 14px !important;
-  font-weight: bold !important; /* ИЗМЕНЕНО: Сделано полужирным */
+  font-weight: bold !important; 
   text-decoration: underline !important;
   color: #ffffff !important; 
   text-transform: uppercase !important; 
@@ -272,15 +264,15 @@
    
     function setupStickyButtonVisibility() {
       var stickyButton = document.getElementById('sticky-book-button');
-      var bookBlock = document.getElementById('book'); 
-      var formBlockElement = document.getElementById('rec1037978986'); 
-      var contactsBlock = document.getElementById('rec1036743606'); 
+      var bookBlockAnchor = document.getElementById('book'); // Якорь формы регистрации
+      var formBlockElement = document.getElementById('rec1037978986'); // Сам блок формы
+      var contactsBlock = document.getElementById('rec1036743606'); // Блок с контактами (соцсети)
       
       if (!stickyButton) { return; }
 
       var showButtonAfterScroll = 600; 
       var hideThresholdBookBlock = 0.60; 
-      var hideThresholdContactsBlock = 0.75; 
+      var hideThresholdContactsBlock = 0.75;
 
       function checkButtonVisibility() {
         var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
@@ -290,7 +282,8 @@
         var shouldHideDueToBookBlock = false;
         var shouldHideDueToContactsBlock = false;
         
-        var actualBookBlockElement = formBlockElement || (bookBlock ? bookBlock.closest('.r') || bookBlock : null);
+        // Определяем фактический элемент для блока формы (сам блок или родительский .r якоря)
+        var actualBookBlockElement = formBlockElement || (bookBlockAnchor ? bookBlockAnchor.closest('.r') || bookBlockAnchor : null);
 
         if (actualBookBlockElement) {
           var bookBlockRect = actualBookBlockElement.getBoundingClientRect();
@@ -371,6 +364,7 @@
         if (DEBUG_SHOW_SCRIPT_VERSION && !document.querySelector('.script-version-display')) {
             displayScriptVersion();
         }
+        // Повторный вызов для надежности после полной загрузки всех ресурсов Tilda
         setupStickyButtonVisibility(); 
         addDetailsLinkToForm(); 
     });
