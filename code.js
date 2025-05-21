@@ -2,7 +2,7 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.6";
+    var SCRIPT_VERSION = "2.7";
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
     var DEBUG_SHOW_SCRIPT_VERSION = true;
 
@@ -150,6 +150,7 @@
   #sticky-book-button {
     width: 70px !important; 
     height: 70px !important;
+    right: 40px !important; /* Увеличен отступ справа для широких экранов */
   }
    #sticky-book-button.sticky-button--visible {
      transform: translateY(-50%) scale(1.15) !important; 
@@ -221,12 +222,10 @@
   font-weight: normal !important;
   text-decoration: underline !important;
   color: #ffffff !important; 
-  text-transform: uppercase !important; /* Прописные буквы */
-  letter-spacing: 0.1em !important; /* Разрядка */
+  text-transform: uppercase !important; 
+  letter-spacing: 0.1em !important; 
   display: inline-block !important; 
 }
-
-/* Убраны стили для переноса евро, т.к. будет настроено в Тильде */
 
 /* Блок "Made on Tilda" БОЛЬШЕ НЕ СКРЫВАЕТСЯ этим скриптом */
 /*
@@ -269,9 +268,11 @@
       if (!stickyButton) { return; }
 
       var showButtonAfterScroll = 300; 
-      // Пороги для скрытия кнопки, когда верхняя часть блока достигает % от высоты окна
-      var hideThresholdBookBlock = 0.60; // 60% для блока формы
-      var hideThresholdContactsBlock = 0.75; // 75% для блока контактов
+      // Пороги для скрытия кнопки, когда ВЕРХНЯЯ ЧАСТЬ блока достигает % от ВЫСОТЫ ОКНА
+      // Уменьшаем пороги, чтобы кнопка скрывалась раньше
+      var hideThresholdBookBlock = 0.55; // 55% для блока формы
+      var hideThresholdContactsBlock = 0.70; // 70% для блока контактов
+      var buttonHeightApproximation = 80; // Примерная высота кнопки с учетом scale
 
       function checkButtonVisibility() {
         var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
@@ -283,21 +284,20 @@
         
         if (bookBlock) {
           var bookBlockRect = bookBlock.getBoundingClientRect();
-          // Скрываем, если верхняя часть блока формы поднялась выше 60% высоты окна
-          if (bookBlockRect.top < (windowHeight * hideThresholdBookBlock)) { 
+          // Скрываем, если верхняя часть блока формы поднялась выше (windowHeight * hideThresholdBookBlock) - buttonHeightApproximation
+          // Это значит, что кнопка начнет исчезать, когда ее нижний край будет приближаться к верхней границе блока
+          if (bookBlockRect.top < (windowHeight * hideThresholdBookBlock) - buttonHeightApproximation) { 
             shouldHideDueToBookBlock = true;
           }
         }
         
         if (contactsBlock) {
             var contactsBlockRect = contactsBlock.getBoundingClientRect();
-            // Скрываем, если верхняя часть блока контактов поднялась выше 75% высоты окна
-            if (contactsBlockRect.top < (windowHeight * hideThresholdContactsBlock)) {
+            if (contactsBlockRect.top < (windowHeight * hideThresholdContactsBlock) - buttonHeightApproximation) {
                 shouldHideDueToContactsBlock = true;
             }
         }
 
-        // Если ни одна из причин для скрытия не сработала И кнопка должна быть показана по скроллу
         if (shouldShowBasedOnInitialScroll && !shouldHideDueToBookBlock && !shouldHideDueToContactsBlock) {
           stickyButton.classList.add('sticky-button--visible');
         } else {
