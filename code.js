@@ -2,9 +2,9 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.4"; // Изменено для отражения правок
+    var SCRIPT_VERSION = "2.4"; // Версия та же, исправляем баг предыдущей
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
-    var DEBUG_SHOW_SCRIPT_VERSION = true;
+    var DEBUG_SHOW_SCRIPT_VERSION = false;
 
     // --- НАЧАЛО БЛОКА CSS-СТИЛЕЙ ---
     var cssStyles = `
@@ -151,7 +151,6 @@
   #sticky-book-button {
     width: 70px !important; /* Увеличиваем размер */
     height: 70px !important;
-    /* transform: translateY(-50%) scale(1.15) !important; /* Увеличиваем базовый масштаб */
   }
    #sticky-book-button.sticky-button--visible {
      transform: translateY(-50%) scale(1.15) !important; /* Базовый масштаб для десктопа */
@@ -215,15 +214,15 @@
 
 /* Стили для ссылки "подробности" в форме */
 .form-details-link-wrapper {
-  text-align: center; /* Центрируем ссылку */
-  margin-top: 8px; /* Отступ сверху от "до 12 участников" */
+  text-align: center; 
+  margin-top: 8px; 
 }
 .form-details-link-wrapper a {
   font-size: 14px;
   font-weight: normal;
   text-decoration: underline;
-  color: #ffffff; 
-  display: inline-block; /* Чтобы отступы работали корректно */
+  color: #ffffff !important; /* ИСПРАВЛЕНИЕ: Добавлен !important для переопределения цвета */
+  display: inline-block; 
 }
 
 /* Блок "Made on Tilda" БОЛЬШЕ НЕ СКРЫВАЕТСЯ этим скриптом */
@@ -266,16 +265,9 @@
       if (!stickyButton) { return; }
 
       var showButtonAfterScroll = 300; 
-      // var activeScreenWidth = 980; // Убрали ограничение по ширине экрана для показа кнопки
       var hideWhenBookBlockTopIsNear = window.innerHeight * 0.85; 
 
       function checkButtonVisibility() {
-        // Убрали условие:
-        // if (window.innerWidth > activeScreenWidth) {
-        //   stickyButton.classList.remove('sticky-button--visible');
-        //   return;
-        // }
-
         var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
         var windowHeight = window.innerHeight;
         
@@ -336,7 +328,6 @@
             
             linkWrapper.appendChild(detailsLink);
             
-            // Вставляем обертку со ссылкой после элемента .t696__descr
             descrElement.parentNode.insertBefore(linkWrapper, descrElement.nextSibling);
         }
     }
