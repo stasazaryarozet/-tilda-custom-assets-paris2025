@@ -2,7 +2,7 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "3.0";
+    var SCRIPT_VERSION = "3.1";
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
     var DEBUG_SHOW_SCRIPT_VERSION = true;
 
@@ -27,6 +27,16 @@
   z-index: 100000;
   border-radius: 3px;
 }
+
+/* --- Сокращение верхнего отступа у главного заголовка на широких экранах --- */
+@media screen and (min-width: 981px) {
+  #rec1036848416 .t-cover__wrapper { /* ID блока обложки и его внутренний wrapper */
+    padding-top: 60px !important; /* Уменьшаем верхний отступ */
+    /* Если потребуется также уменьшить нижний для симметрии при сохранении высоты блока: */
+    /* padding-bottom: 60px !important; */
+  }
+}
+
 
 /* --- Скрытие стандартного Tilda "flash" эффекта --- */
 .t-btn[data-btneffects-first="btneffects-flash"] .t-btn_wrap-effects,
@@ -219,7 +229,7 @@
 }
 .form-details-link-wrapper a {
   font-size: 14px !important;
-  font-weight: normal !important;
+  font-weight: bold !important; /* ИЗМЕНЕНО: Сделано полужирным */
   text-decoration: underline !important;
   color: #ffffff !important; 
   text-transform: uppercase !important; 
@@ -268,7 +278,7 @@
       
       if (!stickyButton) { return; }
 
-      var showButtonAfterScroll = 600; // ИЗМЕНЕНО: Кнопка появляется после большей прокрутки
+      var showButtonAfterScroll = 600; 
       var hideThresholdBookBlock = 0.60; 
       var hideThresholdContactsBlock = 0.75; 
 
