@@ -2,10 +2,9 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.2"; 
+    var SCRIPT_VERSION = "2.4"; 
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
-    // Установите 'false', чтобы скрыть отображение версии
-    var DEBUG_SHOW_SCRIPT_VERSION = false; 
+    var DEBUG_SHOW_SCRIPT_VERSION = true; 
 
     // --- НАЧАЛО БЛОКА CSS-СТИЛЕЙ ---
     var cssStyles = `
@@ -27,8 +26,6 @@
   font-family: Arial, sans-serif;
   z-index: 100000; 
   border-radius: 3px;
-  /* По умолчанию скрыт, если DEBUG_SHOW_SCRIPT_VERSION = false */
-  /* display: none; /* Управляется JS */
 }
 
 /* --- Скрытие стандартного Tilda "flash" эффекта --- */
@@ -206,6 +203,27 @@
   border: none !important;
 }
 
+/* === ИЗМЕНЕНИЯ ДЛЯ ОБЛОЖКИ НА ДЕСКТОПЕ (#rec1036848416) === */
+@media screen and (min-width: 980px) {
+  #rec1036848416 .t-cover,
+  #rec1036848416 .t-cover__carrier {
+    height: 85vh !important; 
+    min-height: 500px !important; 
+  }
+  #rec1036848416 .t-cover__wrapper.t-valign_middle {
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-start !important; 
+      height: 100% !important; 
+      padding-top: 8vh !important; 
+      padding-bottom: 5vh !important; 
+      box-sizing: border-box !important;
+  }
+  #rec1036848416 .t182__wrapper {}
+  #rec1036848416 .t182__title {}
+  #rec1036848416 .t182__descr {}
+}
+
 /* Блок "Made on Tilda" БОЛЬШЕ НЕ СКРЫВАЕТСЯ этим скриптом */
 /*
 #tildacopy { 
@@ -230,14 +248,21 @@
     // --- НАЧАЛО БЛОКА JAVASCRIPT-ЛОГИКИ ---
     
     function displayScriptVersion() {
-        // ===> Функция будет выполняться только если DEBUG_SHOW_SCRIPT_VERSION === true <===
         if (!DEBUG_SHOW_SCRIPT_VERSION) {
             return;
         }
         var versionDisplay = document.createElement('div');
         versionDisplay.className = 'script-version-display';
         versionDisplay.textContent = 'Редакция скрипта: ' + SCRIPT_VERSION;
-        document.body.appendChild(versionDisplay);
+        if (document.body) { 
+            document.body.appendChild(versionDisplay);
+        } else { 
+            document.addEventListener('DOMContentLoaded', function() {
+                if (document.body && !document.querySelector('.script-version-display')) {
+                     document.body.appendChild(versionDisplay);
+                }
+            });
+        }
     }
     
     function setupStickyButtonVisibility() {
