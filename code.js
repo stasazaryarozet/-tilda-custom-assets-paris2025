@@ -2,9 +2,9 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.4"; // Версия та же, исправляем баг предыдущей
+    var SCRIPT_VERSION = "2.5";
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
-    var DEBUG_SHOW_SCRIPT_VERSION = false;
+    var DEBUG_SHOW_SCRIPT_VERSION = true;
 
     // --- НАЧАЛО БЛОКА CSS-СТИЛЕЙ ---
     var cssStyles = `
@@ -115,7 +115,7 @@
   background-color: #ffffff !important; 
   color: #333333 !important;          
   border-radius: 50% !important;
-  display: none; /* Изначально скрыта, управляется JS */
+  display: none; 
   justify-content: center;
   align-items: center;
   text-decoration: none;
@@ -128,15 +128,15 @@
   -webkit-tap-highlight-color: transparent;
 }
 #sticky-book-button.sticky-button--visible {
-  display: flex !important; /* Используем flex для отображения */
+  display: flex !important; 
   opacity: 0.75; 
   visibility: visible;
-  transform: translateY(-50%) scale(1); /* Базовый масштаб для мобильных */
+  transform: translateY(-50%) scale(1); 
 }
 #sticky-book-button:hover {
   background-color: #f8f8f8 !important; 
   color: #000000 !important;
-  transform: translateY(-50%) scale(1.08) !important; /* Увеличение при наведении для мобильных */
+  transform: translateY(-50%) scale(1.08) !important; 
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25) !important; 
   opacity: 1 !important;
 }
@@ -146,17 +146,16 @@
   fill: currentColor; 
 }
 
-/* Стили для кнопки на больших экранах */
 @media screen and (min-width: 981px) { 
   #sticky-book-button {
-    width: 70px !important; /* Увеличиваем размер */
+    width: 70px !important; 
     height: 70px !important;
   }
    #sticky-book-button.sticky-button--visible {
-     transform: translateY(-50%) scale(1.15) !important; /* Базовый масштаб для десктопа */
+     transform: translateY(-50%) scale(1.15) !important; 
    }
   #sticky-book-button:hover {
-    transform: translateY(-50%) scale(1.25) !important; /* Увеличение при наведении для десктопа */
+    transform: translateY(-50%) scale(1.25) !important; 
   }
 }
 
@@ -218,12 +217,27 @@
   margin-top: 8px; 
 }
 .form-details-link-wrapper a {
-  font-size: 14px;
-  font-weight: normal;
-  text-decoration: underline;
-  color: #ffffff !important; /* ИСПРАВЛЕНИЕ: Добавлен !important для переопределения цвета */
-  display: inline-block; 
+  font-size: 14px !important; /* Уменьшенный размер */
+  font-weight: normal !important; /* Не жирный */
+  text-decoration: underline !important;
+  color: #ffffff !important; /* Белый цвет */
+  text-transform: uppercase !important; /* Прописные буквы */
+  letter-spacing: 0.1em !important; /* Разрядка */
+  display: inline-block !important; 
 }
+
+/* Стили для блока с ценой для улучшения переноса */
+#rec1036668431 .t-col_4:last-child .t007__text {
+   word-break: break-word; /* Разрешаем перенос слов */
+   -webkit-hyphens: auto;
+   -ms-hyphens: auto;
+   hyphens: auto;
+}
+#rec1036668431 .t-col_4:last-child .t007__text strong { /* Для "1 350 €" */
+    white-space: nowrap; /* Запрещаем перенос внутри этого блока */
+    display: inline-block; /* Чтобы white-space работал */
+}
+
 
 /* Блок "Made on Tilda" БОЛЬШЕ НЕ СКРЫВАЕТСЯ этим скриптом */
 /*
@@ -260,12 +274,14 @@
    
     function setupStickyButtonVisibility() {
       var stickyButton = document.getElementById('sticky-book-button');
-      var bookBlock = document.getElementById('book'); 
+      var bookBlock = document.getElementById('book'); // Форма регистрации
+      var contactsBlock = document.getElementById('rec1036743606'); // Блок с контактами (соцсети)
       
       if (!stickyButton) { return; }
 
       var showButtonAfterScroll = 300; 
       var hideWhenBookBlockTopIsNear = window.innerHeight * 0.85; 
+      var hideBeforeContactsIsNear = window.innerHeight * 0.9; // Порог для блока контактов
 
       function checkButtonVisibility() {
         var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
@@ -273,21 +289,26 @@
         
         var shouldShowBasedOnInitialScroll = scrollPosition > showButtonAfterScroll;
         var shouldHideDueToBookBlock = false;
+        var shouldHideDueToContactsBlock = false;
         
         if (bookBlock) {
           var bookBlockRect = bookBlock.getBoundingClientRect();
-          if (bookBlockRect.top < hideWhenBookBlockTopIsNear) {
+          // Скрываем, если верхняя часть блока формы уже достаточно высоко на экране
+          if (bookBlockRect.top < hideWhenBookBlockTopIsNear) { 
             shouldHideDueToBookBlock = true;
           }
-        } else {
-          var documentHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
-          var hideButtonBeforePageEnd = 250; 
-          if ((scrollPosition + windowHeight) >= (documentHeight - hideButtonBeforePageEnd)) {
-            shouldHideDueToBookBlock = true; 
-          }
+        }
+        
+        // Дополнительная проверка для блока контактов (чтобы кнопка не накладывалась на него и форму)
+        if (contactsBlock) {
+            var contactsBlockRect = contactsBlock.getBoundingClientRect();
+            if (contactsBlockRect.top < hideBeforeContactsIsNear) {
+                shouldHideDueToContactsBlock = true;
+            }
         }
 
-        if (shouldShowBasedOnInitialScroll && !shouldHideDueToBookBlock) {
+
+        if (shouldShowBasedOnInitialScroll && !shouldHideDueToBookBlock && !shouldHideDueToContactsBlock) {
           stickyButton.classList.add('sticky-button--visible');
         } else {
           stickyButton.classList.remove('sticky-button--visible');
@@ -325,6 +346,7 @@
             var detailsLink = document.createElement('a');
             detailsLink.href = '#bottomline';
             detailsLink.textContent = 'подробности';
+            // Стили теперь в основном через CSS
             
             linkWrapper.appendChild(detailsLink);
             
