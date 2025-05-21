@@ -2,7 +2,7 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.5"; 
+    var SCRIPT_VERSION = "2.6"; 
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
     var DEBUG_SHOW_SCRIPT_VERSION = true; 
 
@@ -19,13 +19,14 @@
   position: fixed;
   top: 10px;
   left: 10px;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.75);
   color: white;
   padding: 5px 10px;
   font-size: 12px;
   font-family: Arial, sans-serif;
-  z-index: 100000; 
+  z-index: 1000001; 
   border-radius: 3px;
+  pointer-events: none;
 }
 
 /* --- Скрытие стандартного Tilda "flash" эффекта --- */
@@ -207,42 +208,19 @@
 @media screen and (min-width: 980px) {
   #rec1036848416 .t-cover,
   #rec1036848416 .t-cover__carrier {
-    height: 85vh !important; /* Устанавливаем высоту обложки */
-    min-height: 550px !important; /* Минимальная высота, чтобы не схлопывалась на низких экранах */
+    height: 88vh !important; 
+    min-height: 500px !important; /* Минимальная высота для очень низких экранов */
+    max-height: 700px !important; /* Ограничение максимальной высоты */
   }
   
-  /* Возвращаем стандартное поведение для .t-cover__wrapper, 
-     чтобы Tilda сама центрировала контент внутри новой высоты 85vh.
-     Убираем flex-свойства, которые мы добавляли ранее. */
   #rec1036848416 .t-cover__wrapper.t-valign_middle {
-    height: 100% !important; /* Обязательно, чтобы t-valign_middle сработало в рамках 85vh */
-    /* Убираем наши предыдущие flex-свойства, если они были здесь */
-    /* display: flex !important; */
-    /* flex-direction: column !important; */
-    /* justify-content: flex-start !important; */
-    /* padding-top: 8vh !important; */ /* Убираем, Tilda сама рассчитает отступы для t-valign_middle */
-    /* padding-bottom: 5vh !important; */
-    /* box-sizing: border-box !important; */
+      height: 100% !important; /* Позволяет Tilda центрировать контент в рамках новой высоты */
+      /* Если нужно сместить контент выше, можно попробовать: */
+      /* padding-top: 10vh !important; */ /* Уменьшить отступ сверху */
+      /* padding-bottom: 10vh !important; */ /* Увеличить отступ снизу, чтобы контент поднялся */
+      /* display: flex; align-items: flex-start; padding-top: 10vh; */ /* Это более радикальный метод, если просто height:100% не помогает */
   }
-
-  /* Если после этого верхний отступ все еще слишком большой, 
-     можно попробовать немного "подтянуть" основной контейнер контента вверх.
-     Это более тонкая настройка, используйте с осторожностью.
-  */
-  /*
-  #rec1036848416 .t182__wrapper {
-     position: relative; 
-     top: -5vh; // Попробуйте значения от -2vh до -10vh 
-  }
-  */
 }
-
-/* Блок "Made on Tilda" БОЛЬШЕ НЕ СКРЫВАЕТСЯ этим скриптом */
-/*
-#tildacopy { 
-  display: none !important;
-}
-*/
     `; // --- КОНЕЦ БЛОКА CSS-СТИЛЕЙ ---
 
     function addStylesToHead(css) {
