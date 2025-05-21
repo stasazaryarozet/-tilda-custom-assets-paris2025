@@ -2,7 +2,7 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.6"; 
+    var SCRIPT_VERSION = "2.7"; 
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
     var DEBUG_SHOW_SCRIPT_VERSION = true; 
 
@@ -208,26 +208,27 @@
   #rec1036848416 .t-cover,
   #rec1036848416 .t-cover__carrier {
     height: 85vh !important; 
-    min-height: 500px !important; /* Минимальная высота для очень низких экранов */
+    min-height: 500px !important; 
+    /* Добавляем overflow: hidden; чтобы контент, выходящий за 85vh, обрезался */
+    overflow: hidden !important; 
   }
   
   #rec1036848416 .t-cover__wrapper.t-valign_middle {
     display: flex !important;
     flex-direction: column !important;
-    justify-content: center !important; /* Вертикальное центрирование контента внутри wrapper */
-    height: 100% !important; /* Обязательно, чтобы wrapper занял всю высоту обложки (85vh) */
-    padding-top: 5vh !important;   /* ===> УМЕНЬШЕННЫЙ верхний отступ (5% от высоты окна) <=== */
-    padding-bottom: 5vh !important; /* Небольшой симметричный нижний отступ */
+    justify-content: center !important; 
+    height: 100% !important; 
+    padding-top: 3vh !important;   /* ===> ЕЩЕ УМЕНЬШЕННЫЙ верхний отступ (3% от высоты окна) <=== */
+    padding-bottom: 3vh !important; /* Симметричный нижний отступ */
     box-sizing: border-box !important;
   }
 
-  /* Убедимся, что внутренний контейнер с текстом не создает лишних отступов, мешающих центрированию */
   #rec1036848416 .t182__wrapper {
-     /* Можно попробовать сбросить или уменьшить его стандартные отступы, если они есть */
-     /* padding-top: 0 !important; */
-     /* padding-bottom: 0 !important; */
-     /* margin-top: 0 !important; */
-     /* margin-bottom: 0 !important; */
+     /* Позволяем этому блоку сжиматься и расти, но не выходить за пределы родителя */
+     flex-shrink: 1;
+     flex-grow: 0; /* Не будет растягиваться, если мало контента */
+     max-height: 100%; /* Ограничиваем максимальную высоту, чтобы поместился в .t-cover__wrapper */
+     /* overflow-y: auto; /* Если контента СЛИШКОМ много, появится внутренний скролл для текста */
   }
 }
 
@@ -356,3 +357,33 @@
     });
 
 })();
+```
+
+**Ключевые изменения в CSS-части для обложки (`#rec1036848416`):**
+
+```css
+@media screen and (min-width: 980px) {
+  #rec1036848416 .t-cover,
+  #rec1036848416 .t-cover__carrier {
+    height: 85vh !important; 
+    min-height: 500px !important; 
+    overflow: hidden !important; /* Добавлено, чтобы обрезать контент, выходящий за 85vh */
+  }
+  
+  #rec1036848416 .t-cover__wrapper.t-valign_middle {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important; 
+    height: 100% !important; 
+    padding-top: 3vh !important;   /* ===> ЕЩЕ УМЕНЬШЕН верхний отступ до 3vh <=== */
+    padding-bottom: 3vh !important; /* Симметричный нижний отступ */
+    box-sizing: border-box !important;
+  }
+
+  #rec1036848416 .t182__wrapper {
+     flex-shrink: 1; /* Позволяет блоку сжиматься, если не хватает места */
+     flex-grow: 0;   /* Не будет растягиваться, если мало контента */
+     max-height: 100%; /* Ограничиваем максимальную высоту, чтобы поместился в .t-cover__wrapper */
+     /* overflow-y: auto; /* Если контента СЛИШКОМ много, появится внутренний скролл для текста. Используйте, если не хотите обрезки. */
+  }
+}
