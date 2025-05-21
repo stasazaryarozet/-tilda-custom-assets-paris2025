@@ -5,7 +5,7 @@
     var SCRIPT_VERSION = "2.2"; 
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
     // Установите 'false', чтобы скрыть отображение версии
-    var DEBUG_SHOW_SCRIPT_VERSION = false; 
+    var DEBUG_SHOW_SCRIPT_VERSION = true; 
 
     // --- НАЧАЛО БЛОКА CSS-СТИЛЕЙ ---
     var cssStyles = `
