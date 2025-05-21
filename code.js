@@ -2,7 +2,7 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.9";
+    var SCRIPT_VERSION = "3.0";
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
     var DEBUG_SHOW_SCRIPT_VERSION = true;
 
@@ -115,7 +115,7 @@
   background-color: #ffffff !important; 
   color: #333333 !important;          
   border-radius: 50% !important;
-  display: none; /* Изначально скрыта, управляется JS через класс */
+  display: none; 
   justify-content: center;
   align-items: center;
   text-decoration: none;
@@ -262,16 +262,15 @@
    
     function setupStickyButtonVisibility() {
       var stickyButton = document.getElementById('sticky-book-button');
-      var bookBlock = document.getElementById('book'); // Форма регистрации (якорь)
-      var formBlockElement = document.getElementById('rec1037978986'); // Сам блок формы
-      var contactsBlock = document.getElementById('rec1036743606'); // Блок с контактами (соцсети)
+      var bookBlock = document.getElementById('book'); 
+      var formBlockElement = document.getElementById('rec1037978986'); 
+      var contactsBlock = document.getElementById('rec1036743606'); 
       
       if (!stickyButton) { return; }
 
-      var showButtonAfterScroll = 300; 
-      // Пороги для скрытия кнопки: когда ВЕРХНЯЯ ЧАСТЬ блока поднимается ВЫШЕ этого % от ВЫСОТЫ ОКНА
-      var hideThresholdBookBlock = 0.60; // Скрывать, если верх формы в верхних 60% окна
-      var hideThresholdContactsBlock = 0.75; // Скрывать, если верх контактов в верхних 75% окна
+      var showButtonAfterScroll = 600; // ИЗМЕНЕНО: Кнопка появляется после большей прокрутки
+      var hideThresholdBookBlock = 0.60; 
+      var hideThresholdContactsBlock = 0.75; 
 
       function checkButtonVisibility() {
         var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
@@ -281,13 +280,10 @@
         var shouldHideDueToBookBlock = false;
         var shouldHideDueToContactsBlock = false;
         
-        // Используем фактический элемент блока формы, если он есть, иначе якорь bookBlock
         var actualBookBlockElement = formBlockElement || (bookBlock ? bookBlock.closest('.r') || bookBlock : null);
-
 
         if (actualBookBlockElement) {
           var bookBlockRect = actualBookBlockElement.getBoundingClientRect();
-          // Скрываем, если верхняя часть блока формы поднялась выше (windowHeight * hideThresholdBookBlock)
           if (bookBlockRect.top < (windowHeight * hideThresholdBookBlock) ) { 
             shouldHideDueToBookBlock = true;
           }
@@ -309,7 +305,7 @@
 
       window.addEventListener('scroll', checkButtonVisibility, { passive: true });
       window.addEventListener('resize', checkButtonVisibility);
-      checkButtonVisibility(); // Первоначальная проверка состояния
+      checkButtonVisibility(); 
     }
 
     function setupCurtainImageAnimation() {
