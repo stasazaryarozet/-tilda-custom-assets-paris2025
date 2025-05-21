@@ -2,7 +2,7 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.4"; 
+    var SCRIPT_VERSION = "2.5"; 
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
     var DEBUG_SHOW_SCRIPT_VERSION = true; 
 
@@ -207,21 +207,34 @@
 @media screen and (min-width: 980px) {
   #rec1036848416 .t-cover,
   #rec1036848416 .t-cover__carrier {
-    height: 85vh !important; 
-    min-height: 500px !important; 
+    height: 85vh !important; /* Устанавливаем высоту обложки */
+    min-height: 550px !important; /* Минимальная высота, чтобы не схлопывалась на низких экранах */
   }
+  
+  /* Возвращаем стандартное поведение для .t-cover__wrapper, 
+     чтобы Tilda сама центрировала контент внутри новой высоты 85vh.
+     Убираем flex-свойства, которые мы добавляли ранее. */
   #rec1036848416 .t-cover__wrapper.t-valign_middle {
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: flex-start !important; 
-      height: 100% !important; 
-      padding-top: 8vh !important; 
-      padding-bottom: 5vh !important; 
-      box-sizing: border-box !important;
+    height: 100% !important; /* Обязательно, чтобы t-valign_middle сработало в рамках 85vh */
+    /* Убираем наши предыдущие flex-свойства, если они были здесь */
+    /* display: flex !important; */
+    /* flex-direction: column !important; */
+    /* justify-content: flex-start !important; */
+    /* padding-top: 8vh !important; */ /* Убираем, Tilda сама рассчитает отступы для t-valign_middle */
+    /* padding-bottom: 5vh !important; */
+    /* box-sizing: border-box !important; */
   }
-  #rec1036848416 .t182__wrapper {}
-  #rec1036848416 .t182__title {}
-  #rec1036848416 .t182__descr {}
+
+  /* Если после этого верхний отступ все еще слишком большой, 
+     можно попробовать немного "подтянуть" основной контейнер контента вверх.
+     Это более тонкая настройка, используйте с осторожностью.
+  */
+  /*
+  #rec1036848416 .t182__wrapper {
+     position: relative; 
+     top: -5vh; // Попробуйте значения от -2vh до -10vh 
+  }
+  */
 }
 
 /* Блок "Made on Tilda" БОЛЬШЕ НЕ СКРЫВАЕТСЯ этим скриптом */
@@ -349,3 +362,41 @@
     });
 
 })();
+```
+
+**Ключевые изменения в CSS-части для обложки (`#rec1036848416`):**
+
+```css
+@media screen and (min-width: 980px) {
+  #rec1036848416 .t-cover,
+  #rec1036848416 .t-cover__carrier {
+    height: 85vh !important; /* Устанавливаем высоту обложки */
+    min-height: 550px !important; /* Минимальная высота, чтобы не схлопывалась на очень низких экранах */
+  }
+  
+  /* Возвращаем стандартное поведение для .t-cover__wrapper, 
+     чтобы Tilda сама центрировала контент внутри новой высоты 85vh.
+     Убираем flex-свойства, которые мы добавляли ранее. */
+  #rec1036848416 .t-cover__wrapper.t-valign_middle {
+      height: 100% !important; /* Обязательно, чтобы t-valign_middle сработало в рамках 85vh */
+      /* Убираем наши предыдущие flex-свойства, если они были здесь: */
+      /* display: flex !important; */
+      /* flex-direction: column !important; */
+      /* justify-content: flex-start !important; */
+      /* padding-top: 8vh !important; */ /* Убираем, Tilda сама рассчитает отступы для t-valign_middle */
+      /* padding-bottom: 5vh !important; */
+      /* box-sizing: border-box !important; */
+  }
+
+  /* Если после этого верхний отступ все еще слишком большой, 
+     можно попробовать немного "подтянуть" основной контейнер контента вверх.
+     Это более тонкая настройка, используйте с осторожностью.
+     Раскомментируйте и подберите значение top.
+  */
+  /*
+  #rec1036848416 .t182__wrapper {
+     position: relative; 
+     top: -5vh; // Попробуйте значения от -2vh до -10vh 
+  }
+  */
+}
