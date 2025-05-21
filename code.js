@@ -2,9 +2,10 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.8"; 
+    var SCRIPT_VERSION = "2.2"; 
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
-    var DEBUG_SHOW_SCRIPT_VERSION = true; 
+    // Установите 'false', чтобы скрыть отображение версии
+    var DEBUG_SHOW_SCRIPT_VERSION = false; 
 
     // --- НАЧАЛО БЛОКА CSS-СТИЛЕЙ ---
     var cssStyles = `
@@ -26,6 +27,8 @@
   font-family: Arial, sans-serif;
   z-index: 100000; 
   border-radius: 3px;
+  /* По умолчанию скрыт, если DEBUG_SHOW_SCRIPT_VERSION = false */
+  /* display: none; /* Управляется JS */
 }
 
 /* --- Скрытие стандартного Tilda "flash" эффекта --- */
@@ -203,45 +206,6 @@
   border: none !important;
 }
 
-/* === ИЗМЕНЕНИЯ ДЛЯ ОБЛОЖКИ НА ДЕСКТОПЕ (#rec1036848416) - ГАРАНТИРОВАННОЕ ОТОБРАЖЕНИЕ КНОПКИ === */
-@media screen and (min-width: 980px) {
-  #rec1036848416 .t-cover,
-  #rec1036848416 .t-cover__carrier {
-    height: auto !important; /* Позволяем обложке растягиваться по контенту */
-    min-height: 70vh !important; /* Минимальная высота, чтобы не была слишком маленькой, если контента мало */
-    padding-bottom: 30px !important; /* Добавляем отступ снизу, чтобы кнопка точно не прилипала */
-  }
-  
-  #rec1036848416 .t-cover__wrapper.t-valign_middle {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important; /* Центрируем контент по вертикали */
-    height: auto !important; /* Высота по содержимому */
-    min-height: inherit !important; /* Наследуем min-height от родителя */
-    padding-top: max(5vh, 30px) !important;   /* Верхний отступ: 5% от высоты окна, но не менее 30px */
-    padding-bottom: max(5vh, 30px) !important; /* Нижний отступ */
-    box-sizing: border-box !important;
-  }
-
-  #rec1036848416 .t182__wrapper {
-     width: 100%; /* Чтобы занимал всю доступную ширину в контейнере */
-     max-width: 640px; /* Ограничение ширины контента, как в Tilda по умолчанию для этого блока */
-     margin-left: auto;
-     margin-right: auto;
-  }
-
-  /* Уменьшаем отступы между элементами внутри обложки, если они заданы Tilda по умолчанию */
-  #rec1036848416 .t182__title {
-      margin-bottom: 20px !important; /* Уменьшаем отступ под заголовком */
-  }
-  #rec1036848416 .t182__descr {
-      margin-bottom: 30px !important; /* Уменьшаем отступ под описанием */
-  }
-  #rec1036848416 .t182__buttons {
-      margin-top: 0 !important; /* Убираем верхний отступ у блока с кнопкой, если он есть */
-  }
-}
-
 /* Блок "Made on Tilda" БОЛЬШЕ НЕ СКРЫВАЕТСЯ этим скриптом */
 /*
 #tildacopy { 
@@ -266,21 +230,14 @@
     // --- НАЧАЛО БЛОКА JAVASCRIPT-ЛОГИКИ ---
     
     function displayScriptVersion() {
+        // ===> Функция будет выполняться только если DEBUG_SHOW_SCRIPT_VERSION === true <===
         if (!DEBUG_SHOW_SCRIPT_VERSION) {
             return;
         }
         var versionDisplay = document.createElement('div');
         versionDisplay.className = 'script-version-display';
         versionDisplay.textContent = 'Редакция скрипта: ' + SCRIPT_VERSION;
-        if (document.body) { 
-            document.body.appendChild(versionDisplay);
-        } else { 
-            document.addEventListener('DOMContentLoaded', function() {
-                if (document.body && !document.querySelector('.script-version-display')) {
-                     document.body.appendChild(versionDisplay);
-                }
-            });
-        }
+        document.body.appendChild(versionDisplay);
     }
     
     function setupStickyButtonVisibility() {
@@ -367,46 +324,3 @@
     });
 
 })();
-```
-
-**Ключевые изменения в CSS-части для обложки (`#rec1036848416`):**
-
-```css
-@media screen and (min-width: 980px) {
-  #rec1036848416 .t-cover,
-  #rec1036848416 .t-cover__carrier {
-    height: auto !important; /* Позволяем обложке растягиваться по контенту */
-    min-height: 70vh !important; /* Минимальная высота, чтобы не была слишком маленькой */
-    padding-bottom: 30px !important; /* Добавляем отступ снизу, чтобы кнопка точно не прилипала к краю */
-  }
-  
-  #rec1036848416 .t-cover__wrapper.t-valign_middle {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important; 
-    height: auto !important; /* Высота по содержимому */
-    min-height: inherit !important; /* Наследуем min-height от родителя */
-    padding-top: max(5vh, 30px) !important;   /* Верхний отступ: большее из 5% высоты окна или 30px */
-    padding-bottom: max(5vh, 30px) !important; /* Нижний отступ: большее из 5% высоты окна или 30px */
-    box-sizing: border-box !important;
-  }
-
-  #rec1036848416 .t182__wrapper {
-     width: 100%; 
-     max-width: 640px; /* Стандартное ограничение Tilda для контента в обложке */
-     margin-left: auto;
-     margin-right: auto;
-     /* Можно также добавить flex-shrink: 0; чтобы этот блок не сжимался, если не нужно */
-  }
-
-  /* Уменьшаем стандартные отступы Tilda между элементами контента, если они слишком большие */
-  #rec1036848416 .t182__title {
-      margin-bottom: 20px !important; /* Уменьшаем отступ под заголовком */
-  }
-  #rec1036848416 .t182__descr {
-      margin-bottom: 30px !important; /* Уменьшаем отступ под описанием */
-  }
-  #rec1036848416 .t182__buttons {
-      margin-top: 0 !important; /* Убираем верхний отступ у блока с кнопкой, если он есть */
-  }
-}
