@@ -2,7 +2,7 @@
 (function() {
 
     // --- ВЕРСИЯ РЕДАКЦИИ СКРИПТА ---
-    var SCRIPT_VERSION = "2.5";
+    var SCRIPT_VERSION = "2.6";
     // --- ФЛАГ ДЛЯ ОТОБРАЖЕНИЯ ВЕРСИИ СКРИПТА НА СТРАНИЦЕ ---
     var DEBUG_SHOW_SCRIPT_VERSION = true;
 
@@ -217,27 +217,16 @@
   margin-top: 8px; 
 }
 .form-details-link-wrapper a {
-  font-size: 14px !important; /* Уменьшенный размер */
-  font-weight: normal !important; /* Не жирный */
+  font-size: 14px !important;
+  font-weight: normal !important;
   text-decoration: underline !important;
-  color: #ffffff !important; /* Белый цвет */
+  color: #ffffff !important; 
   text-transform: uppercase !important; /* Прописные буквы */
   letter-spacing: 0.1em !important; /* Разрядка */
   display: inline-block !important; 
 }
 
-/* Стили для блока с ценой для улучшения переноса */
-#rec1036668431 .t-col_4:last-child .t007__text {
-   word-break: break-word; /* Разрешаем перенос слов */
-   -webkit-hyphens: auto;
-   -ms-hyphens: auto;
-   hyphens: auto;
-}
-#rec1036668431 .t-col_4:last-child .t007__text strong { /* Для "1 350 €" */
-    white-space: nowrap; /* Запрещаем перенос внутри этого блока */
-    display: inline-block; /* Чтобы white-space работал */
-}
-
+/* Убраны стили для переноса евро, т.к. будет настроено в Тильде */
 
 /* Блок "Made on Tilda" БОЛЬШЕ НЕ СКРЫВАЕТСЯ этим скриптом */
 /*
@@ -280,8 +269,9 @@
       if (!stickyButton) { return; }
 
       var showButtonAfterScroll = 300; 
-      var hideWhenBookBlockTopIsNear = window.innerHeight * 0.85; 
-      var hideBeforeContactsIsNear = window.innerHeight * 0.9; // Порог для блока контактов
+      // Пороги для скрытия кнопки, когда верхняя часть блока достигает % от высоты окна
+      var hideThresholdBookBlock = 0.60; // 60% для блока формы
+      var hideThresholdContactsBlock = 0.75; // 75% для блока контактов
 
       function checkButtonVisibility() {
         var scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
@@ -293,21 +283,21 @@
         
         if (bookBlock) {
           var bookBlockRect = bookBlock.getBoundingClientRect();
-          // Скрываем, если верхняя часть блока формы уже достаточно высоко на экране
-          if (bookBlockRect.top < hideWhenBookBlockTopIsNear) { 
+          // Скрываем, если верхняя часть блока формы поднялась выше 60% высоты окна
+          if (bookBlockRect.top < (windowHeight * hideThresholdBookBlock)) { 
             shouldHideDueToBookBlock = true;
           }
         }
         
-        // Дополнительная проверка для блока контактов (чтобы кнопка не накладывалась на него и форму)
         if (contactsBlock) {
             var contactsBlockRect = contactsBlock.getBoundingClientRect();
-            if (contactsBlockRect.top < hideBeforeContactsIsNear) {
+            // Скрываем, если верхняя часть блока контактов поднялась выше 75% высоты окна
+            if (contactsBlockRect.top < (windowHeight * hideThresholdContactsBlock)) {
                 shouldHideDueToContactsBlock = true;
             }
         }
 
-
+        // Если ни одна из причин для скрытия не сработала И кнопка должна быть показана по скроллу
         if (shouldShowBasedOnInitialScroll && !shouldHideDueToBookBlock && !shouldHideDueToContactsBlock) {
           stickyButton.classList.add('sticky-button--visible');
         } else {
@@ -346,7 +336,6 @@
             var detailsLink = document.createElement('a');
             detailsLink.href = '#bottomline';
             detailsLink.textContent = 'подробности';
-            // Стили теперь в основном через CSS
             
             linkWrapper.appendChild(detailsLink);
             
